@@ -2524,7 +2524,7 @@ class DetailUpzis extends Component
                     "*" .  "3. OPERASIONAL UPZIS"  . "*" .  "\n" .
                     '(Rp' . number_format($jumlah_nominal_c, 0, '.', '.') . ',-)' . "\n" . "\n" .
                     
-                    "Lengkapi LPJ pentasyarufan sebelum pengajuan berikutnya."
+                    "Lengkapi LPJ pentasyarufan sebelum pengajuan berikutnya." . "\n" .
 
 
                     "Terima Kasih." . "\n" .
