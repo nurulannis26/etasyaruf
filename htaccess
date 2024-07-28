@@ -1,0 +1,6 @@
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^e\-tasyaruf\.nucarecilacap\.id$
+RewriteRule ^/?$ "https\:\/\/e\-tasyaruf\.nucarecilacap\.id\/" [R=301,L]
+
+php_value max_execution_time 120
