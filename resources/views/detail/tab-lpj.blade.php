@@ -122,13 +122,15 @@
                     </sup>
                 @endif
             @endif
-            
+
             @if ($data_detail->approval_status_divpro == 'Disetujui')
                 @if ($data_detail->status_ketua == 'Disetujui')
                     <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
                 @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
                     <sup class="text-light badge badge-warning">Ketua Blm Merespon
                     </sup>
+                @elseif ($data_detail->status_ketua == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
                 @endif
             @endif
 
@@ -136,7 +138,6 @@
                 @if ($data_detail->respon_ketua == 'Tidak Perlu')
                     <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
                 @else
-                    
                 @endif
             @endif
 
@@ -197,24 +198,24 @@
             {{-- {{ dd($data_detail) }} --}}
 
 
-                @if ($data_detail->approval_status == 'Disetujui')
-            @if ($data_detail->berita_konfirmasi_pc)
-                <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">LPJ Blm Dikonfirmasi Div. Penyaluran
-                </sup>
-            @endif
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->berita_konfirmasi_pc)
+                    <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">LPJ Blm Dikonfirmasi Div. Penyaluran
+                    </sup>
+                @endif
 
 
-            @if ($data_detail->konfirmasi_lpj_div_prog != 'Dikonfirmasi')
-                <sup class="text-light badge badge-warning">LPJ Blm Diperiksa Div. Program
-                </sup>
-            @else
-                <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
-                </sup>
+                @if ($data_detail->konfirmasi_lpj_div_prog != 'Dikonfirmasi')
+                    <sup class="text-light badge badge-warning">LPJ Blm Diperiksa Div. Program
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
+                    </sup>
+                @endif
             @endif
-         @endif
             {{-- END badge --}}
             <br>
             {{-- @if ($data_detail->approval_status == 'Disetujui')
@@ -556,36 +557,40 @@
                                     <td>
                                         <span>Format Berita Acara </span><br>
                                         <div class="btn-group ">
-                                            <button type="button" class="btn btn-sm btn-outline-success hover float-left dropdown-toggle mr-2 mt-2"
-                                                data-toggle="dropdown" aria-expanded="false" style="border-radius:10px; width:3cm;">
-                                                 Download
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-success hover float-left dropdown-toggle mr-2 mt-2"
+                                                data-toggle="dropdown" aria-expanded="false"
+                                                style="border-radius:10px; width:3cm;">
+                                                Download
                                             </button>
                                             <div class="dropdown-menu" style="border-radius: 10px;">
-                                                <a class="dropdown-item btn-block" target="_blank" href="/pc/berita_serah_terima/{{ $data_detail->id_pengajuan_detail ?? null }}"
-                                                    >Penyaluran Langsung
+                                                <a class="dropdown-item btn-block" target="_blank"
+                                                    href="/pc/berita_serah_terima/{{ $data_detail->id_pengajuan_detail ?? null }}">Penyaluran
+                                                    Langsung
                                                 </a>
-                                                <a class="dropdown-item btn-block" target="_blank" href="/pc/berita_serah_terima_transfer/{{ $data_detail->id_pengajuan_detail ?? null }}"
-                                                    >Penyaluran Melalui Transfer
+                                                <a class="dropdown-item btn-block" target="_blank"
+                                                    href="/pc/berita_serah_terima_transfer/{{ $data_detail->id_pengajuan_detail ?? null }}">Penyaluran
+                                                    Melalui Transfer
                                                 </a>
                                             </div>
                                         </div>
 
                                     </td>
                                 </tr>
-                                
-                                    @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '20f2ff4d-1596-48ab-b60d-8a4b75a9784d')
-                                        <tr class="intro-detail-data-pengajuan-konfirmasi-upload-berkas">
-                                            <td class="text-bold" style="width: 40%;">
-                                                Upload
-                                                Berita
-                                                Acara
-                                            </td>
 
-                                            <td>
+                                @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '20f2ff4d-1596-48ab-b60d-8a4b75a9784d')
+                                    <tr class="intro-detail-data-pengajuan-konfirmasi-upload-berkas">
+                                        <td class="text-bold" style="width: 40%;">
+                                            Upload
+                                            Berita
+                                            Acara
+                                        </td>
+
+                                        <td>
                                             <div class="custom-file" id="customFileScanBerita">
                                                 <input type="file" wire:model="scan_berita"
-                                                    accept="application/pdf"
-                                                    class="custom-file-input" name="file">
+                                                    accept="application/pdf" class="custom-file-input"
+                                                    name="file">
                                                 <label class="custom-file-label" for="customFile">Pilih
                                                     file</label>
                                             </div><br>
@@ -599,11 +604,11 @@
                                             </button> --}}
 
                                             @if ($scan_berita == '')
-                                            <button wire:click="uploadBeritaUmumPc"
-                                                class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2"
-                                                style="border-radius:10px; width:3cm;" id="uploadBerita"
-                                                disabled>Upload
-                                            </button>
+                                                <button wire:click="uploadBeritaUmumPc"
+                                                    class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2"
+                                                    style="border-radius:10px; width:3cm;" id="uploadBerita"
+                                                    disabled>Upload
+                                                </button>
                                             @else
                                                 <button wire:click="uploadBeritaUmumPc"
                                                     class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2"
@@ -615,8 +620,8 @@
 
 
                                         </td>
-                                        </tr>
-                                    @endif
+                                    </tr>
+                                @endif
 
 
 
@@ -659,9 +664,11 @@
                                             @endif
 
                                         @endif
-                                        
-                                        @if ($data_detail->status_berita == 'Sudah Dikonfirmasi' and
-                                                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3' and $data_detail->file_berita != null)
+
+                                        @if (
+                                            $data_detail->status_berita == 'Sudah Dikonfirmasi' and
+                                                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3' and
+                                                $data_detail->file_berita != null)
                                             <br>
                                             <button wire:click="hapusBeritaUmum"
                                                 class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2"
@@ -681,9 +688,18 @@
                                             <span class="text-bold">
                                                 {{ \App\Models\Pengguna::where('gocap_id_pc_pengurus', $data_detail->berita_konfirmasi_pc)->value('nama') }}</span>
                                             @php
-                                                $PengurusPc = \App\Models\PcPengurus::where('id_pc_pengurus', $data_detail->berita_konfirmasi_pc)->value('id_pengurus_jabatan');
-                                                $jabatan = \App\Models\JabatanPengurus::where('id_pengurus_jabatan', $PengurusPc)->value('jabatan');
-                                                $bidang = \App\Models\JabatanPengurus::where('id_pengurus_jabatan', $PengurusPc)->value('divisi');
+                                                $PengurusPc = \App\Models\PcPengurus::where(
+                                                    'id_pc_pengurus',
+                                                    $data_detail->berita_konfirmasi_pc,
+                                                )->value('id_pengurus_jabatan');
+                                                $jabatan = \App\Models\JabatanPengurus::where(
+                                                    'id_pengurus_jabatan',
+                                                    $PengurusPc,
+                                                )->value('jabatan');
+                                                $bidang = \App\Models\JabatanPengurus::where(
+                                                    'id_pengurus_jabatan',
+                                                    $PengurusPc,
+                                                )->value('divisi');
                                                 $jab = $jabatan . ' Bidang ' . $bidang;
                                             @endphp
                                             <span style="font-size:11pt;">
@@ -713,8 +729,14 @@
                                             <span class="text-bold">
                                                 {{ \App\Models\Pengguna::where('gocap_id_pc_pengurus', $data_detail->lpj_pemeriksa_pc)->value('nama') }}</span>
                                             @php
-                                                $PengurusPc = \App\Models\PcPengurus::where('id_pc_pengurus', $data_detail->lpj_pemeriksa_pc)->value('id_pengurus_jabatan');
-                                                $jabatan = \App\Models\JabatanPengurus::where('id_pengurus_jabatan', $PengurusPc)->value('jabatan');
+                                                $PengurusPc = \App\Models\PcPengurus::where(
+                                                    'id_pc_pengurus',
+                                                    $data_detail->lpj_pemeriksa_pc,
+                                                )->value('id_pengurus_jabatan');
+                                                $jabatan = \App\Models\JabatanPengurus::where(
+                                                    'id_pengurus_jabatan',
+                                                    $PengurusPc,
+                                                )->value('jabatan');
                                             @endphp
                                             <span style="font-size:11pt;">
                                                 ({{ $jabatan ?? '' }})</span>
@@ -739,11 +761,12 @@
                                     </td>
                                     <td>
                                         @if (Auth::user()->gocap_id_pc_pengurus != null and
-                                        Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
-                                            <button wire:click="konfirmasiPemohon()" class="btn btn-sm btn-secondary hover"
-                                            data-toggle="collapse" data-target="#rekomendasi" aria-expanded="false"
-                                            aria-controls="rekomendasi">
-                                            {{ $dp->konfirmasi_pemohon == '0' ? 'Kirim Notif' : 'Kirim Ulang Notif' }}
+                                                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
+                                            <button wire:click="konfirmasiPemohon()"
+                                                class="btn btn-sm btn-secondary hover" data-toggle="collapse"
+                                                data-target="#rekomendasi" aria-expanded="false"
+                                                aria-controls="rekomendasi">
+                                                {{ $dp->konfirmasi_pemohon == '0' ? 'Kirim Notif' : 'Kirim Ulang Notif' }}
                                             </button>
                                         @endif
                                     </td>
@@ -840,380 +863,409 @@
         </div>
 
 
-    @if (Auth::user()->gocap_id_pc_pengurus == '9f14046b-a733-4ef8-a3a4-db8185a889e8')
-        <div>
-            <b> &nbsp;C. LAMPIRAN PENGAJUAN/PROPOSAL/LAINNYA</b>
-        </div>
+        @if (Auth::user()->gocap_id_pc_pengurus == '9f14046b-a733-4ef8-a3a4-db8185a889e8')
+            <div>
+                <b> &nbsp;C. LAMPIRAN PENGAJUAN/PROPOSAL/LAINNYA</b>
+            </div>
+
+            <div class="col-sm-12 mt-3 col-md-12 col-lg-12 tab-tab-lampiran-pengajuan-umum-pc">
+
+
+                {{-- tabel dokumentasi --}}
+                <table class="table table-bordered mt-2 mb-2" style="width:100%">
+                    <thead>
+                        <tr class="text-center">
+                            <th style="width: 5%;">No</th>
+                            <th style="width: 40%">Judul</th>
+                            <th>File</th>
+                            <th>Waktu Upload</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @forelse($lampiran as $a)
+                            {{-- @php
+                        dd($a);
+                    @endphp --}}
+                            <tr>
+                                <td>
+                                    {{ $loop->iteration }}
+                                </td>
+                                <td>
+                                    {{ $a->judul }} <br>
+                                    {{-- <span style="font-size: 10pt">Diinput Oleh :
+                                    {{ $this->nama_pengurus_pc($a->maker_tingkat_pc) }}
+                                    ({{ $this->jabatan_pengurus_pc($a->maker_tingkat_pc) }})
+                                </span> --}}
+                                </td>
+                                <td>
+                                    <a href="{{ asset('uploads/pengajuan_lampiran/' . $a->file) }}" target="_blank">
+                                        {{ $a->file }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($a->created_at)->format('d/m/Y H:i:s') }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center"> Belum ada data</td>
+                            </tr>
+                        @endforelse
+
+
+                    </tbody>
+                </table>
+                {{-- end tabel --}}
+            </div>
+
+
+            <div>
+                <b class="ml-2"> D. LAMPIRAN SURVEY
+                </b>
+            </div>
+
+            {{-- penerima manfaat --}}
+            <div class="col-sm-12 col-lg-12 col-md-12 mt-2">
+                <table class="table table-bordered table-hover mt-2" style="width:100%">
+                    <thead>
+                        <tr class="text-center">
+                            <th style="width: 10px;vertical-align:middle;">No</th>
+                            <th style="width: 25%;vertical-align:middle;">Penerima Manfaat</th>
+                            <th style="width: 20%;vertical-align:middle;">Alamat & No HP</th>
+                            <th style="width: 20%;vertical-align:middle;">Nominal & Jenis Permohonan</th>
+                            <th style="width: 20%;vertical-align:middle;">Keterangan</th>
+                            @if ($data_detail->approval_status == 'Disetujui')
+                                <th style="width: 35%;vertical-align:middle;">Survey</th>
+                            @endif
+                            @if ($data_detail->pil_survey == 'Perlu')
+                                @if (count($penerima) > 0)
+                                    <th style="vertical-align:middle;">Aksi</th>
+                                @endif
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($penerima as $a)
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center"> Belum ada data</td>
+                            </tr>
+                        @endforelse
+                        @foreach ($penerima as $a)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td><b style="font-size:16px;">{{ $a->nama }}</b> <br>
+                                    NIK: {{ $a->nik ?? '-' }} <br>
+                                    KK: {{ $a->nokk ?? '-' }}
+                                    {{-- <span style="font-size: 10pt">Diinput Oleh :
+                            {{ $this->nama_pengurus_pc($a->maker_tingkat_pc) }}
+                            ({{ $this->jabatan_pengurus_pc($a->maker_tingkat_pc) }})
+                        </span> --}}
+                                </td>
+                                <td> <b style="font-size:16px;">{{ $a->alamat ?? '-' }}</b> <br>
+                                    No HP: {{ $a->nohp ?? '-' }}</td>
+                                <td class="text-left">
+                                    <b style="font-size:16px;">Rp{{ number_format($a->nominal_bantuan, 0, '.', '.') }},-
+                                    </b> <br>
+                                    Jenis Bantuan: {{ $a->jenis_bantuan ?? '-' }}
+                                </td>
+                                {{-- <td>{{ $a->keterangan }}</td> --}}
+
+                                <td><b style="font-size:16px;">{{ $a->keterangan ?? '-' }}</b> <br>
+                                </td>
+                                @if ($data_detail->approval_status == 'Disetujui')
+                                    <td>
+                                        @if ($data_detail->pil_survey == 'Perlu')
+                                            @php
+                                                $tgl = App\Models\SurveyPenerimaManfaat::where(
+                                                    'id_penerima_manfaat',
+                                                    $a->id_pengajuan_penerima,
+                                                )->first();
+                                            @endphp
+                                            @if ($tgl && $tgl->tanggal_survey)
+                                                {{ Carbon\Carbon::parse($tgl->tanggal_survey)->isoFormat('dddd, D MMMM Y') ?? '' }}
+                                                <br>
+                                            @endif
+
+                                            @php
+                                                $pengajuanSurvey = DB::table('survey_penerima_manfaat')
+                                                    ->leftjoin(
+                                                        'pengajuan_penerima',
+                                                        'pengajuan_penerima.id_pengajuan_penerima',
+                                                        '=',
+                                                        'survey_penerima_manfaat.id_penerima_manfaat',
+                                                    )
+                                                    ->where(
+                                                        'pengajuan_penerima.id_pengajuan_penerima',
+                                                        $a->id_pengajuan_penerima,
+                                                    )
+                                                    ->where(
+                                                        'pengajuan_penerima.id_pengajuan',
+                                                        $data_detail->id_pengajuan,
+                                                    )
+                                                    ->where(
+                                                        'pengajuan_penerima.id_pengajuan_detail',
+                                                        $data_detail->id_pengajuan_detail,
+                                                    )
+                                                    ->first();
+                                            @endphp
+
+                                            @if ($pengajuanSurvey)
+                                                @if ($pengajuanSurvey->hasil == 'disetujui')
+                                                    <span class="badge badge-success"
+                                                        style="font-size: 14px;">Disetujui</span>
+                                                @elseif($pengajuanSurvey->hasil == 'ditolak')
+                                                    <span class="badge badge-danger"
+                                                        style="font-size: 14px;">Ditolak</span>
+                                                @endif
+                                            @else
+                                                <span class="badge badge-secondary" style="font-size: 14px;">Belum
+                                                    Direspon</span>
+                                            @endif
+                                        @endif
+
+                                    </td>
+                                @endif
+                                @if ($data_detail->pil_survey == 'Perlu')
+                                    <td>
+                                        <!-- tombol aksi -->
+                                        <div class="btn-group">
+                                            <button type="button" class=" btn btn-success btn-sm"
+                                                data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">Kelola</button>
+                                            <button type="button"
+                                                class=" btn btn-success dropdown-toggle dropdown-toggle-split btn-sm"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only">Toggle
+                                                    Dropdown</span>
+                                            </button>
+
+                                            <div class="dropdown-menu">
+
+                                                @if ($data_detail->pil_survey == 'Perlu')
+                                                    @if (Auth::user()->gocap_id_pc_pengurus != $data->pj_pc and $this->kelolaSurvey($a->id_pengajuan_penerima) == 0)
+                                                        @if ($this->kelolaSurvey($a->id_pengajuan_penerima) == 1)
+                                                            <a onMouseOver="this.style.color='orange'"
+                                                                onMouseOut="this.style.color='black'"
+                                                                class="dropdown-item tombol-orange"
+                                                                wire:click="belum_survey()">
+                                                                <i class="fas fa-print" style="width: 20px"></i>Cetak
+                                                                Survey</a>
+                                                        @endif
+                                                    @else
+                                                        @if ($this->kelolaSurvey($a->id_pengajuan_penerima) == 1)
+                                                            <a onMouseOver="this.style.color='orange'"
+                                                                onMouseOut="this.style.color='black'"
+                                                                class="dropdown-item tombol-orange" target="_blank"
+                                                                {{-- wire:click="ngok('{{ $a->id_pengajuan_penerima }}')" --}}
+                                                                href="/pc/survey/{{ $a->id_pengajuan_penerima }}"><i
+                                                                    class="fas fa-print" style="width: 20px"></i>Cetak
+                                                                Survey</a>
+                                                        @endif
+                                                    @endif
+                                                @endif
+                                            </div>
+
+                                        </div>
+                                        {{-- end tombol aksi --}}
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                        {{-- {{ dd($data_detail->id_pengajuan); }} --}}
+                    </tbody>
+                </table>
+                {{-- end tabel --}}
+            </div>
+            {{-- end penerima manfaat --}}
+
+            <div>
+                <b class="ml-2"> E. LAMPIRAN PENCAIRAN
+                </b>
+            </div>
+            <div class="col-sm-12 col-lg-12 col-md-12 mt-2 tab-tab-daftar-penerima-manfaat-pengajuan-umum-pc">
+                <table class="table table-bordered table-hover mt-2" style="width:100%">
+                    <thead>
+                        <tr class="text-center">
+                            <th style="width: 5%;vertical-align:middle;">No</th>
+                            <th style="width: 30%;vertical-align:middle;">Judul</th>
+                            <th style="width: 30%;vertical-align:middle;">Pembuat</th>
+                            <th style="width: 25%;vertical-align:middle;">File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($lampiran_pencairan as $lp)
+                            {{-- @php
+                        dd($lp);
+                    @endphp --}}
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center"> Belum ada data</td>
+                            </tr>
+                        @endforelse
+                        @foreach ($lampiran_pencairan as $lp)
+                            <tr>
+                                <td style="text-align:center;">{{ $loop->iteration }}</td>
+                                <td><b style="font-size:16px;">{{ $lp->judul }}</b>
+                                </td>
+                                @php
+                                    $nama_pembuat = App\Models\Pengguna::where(
+                                        'gocap_id_pc_pengurus',
+                                        $lp->id_pengurus_pc,
+                                    )->value('nama');
+                                    $id_jabatan = App\Models\PcPengurus::where(
+                                        'id_pc_pengurus',
+                                        $lp->id_pengurus_pc,
+                                    )->value('id_pengurus_jabatan');
+                                    $jabatan = App\Models\JabatanPengurus::where(
+                                        'id_pengurus_jabatan',
+                                        $id_jabatan,
+                                    )->value('jabatan');
+                                @endphp
+                                <td class="text-left">
+                                    <b style="font-size:16px;">{{ $nama_pembuat . ' (' . $jabatan . ')' }}
+                                </td>
+
+
+                                <td><b style="font-size:16px;"><a target="_blank"
+                                            href="{{ asset('uploads/lampiran_pencairan/' . $lp->file) }}">{{ $lp->file }}</a></b>
+                                    <br>
+                                    {{ Carbon\Carbon::parse($lp->created_at)->isoFormat('dddd, D MMMM Y') }}
+                                </td>
+                            </tr>
+                        @endforeach
+
+                    </tbody>
+                </table>
+                {{-- end tabel --}}
+            </div>
+        @endif
 
         <div class="col-sm-12 mt-3 col-md-12 col-lg-12 tab-tab-lampiran-pengajuan-umum-pc">
+            {{-- judul --}}
+            <div class="d-flex justify-content-between align-items-center">
+                @if (Auth::user()->gocap_id_pc_pengurus == '9f14046b-a733-4ef8-a3a4-db8185a889e8')
+                    <div>
+                        <b> F. LAMPIRAN LPJ</b>
+                    </div>
+                @else
+                    <div>
+                        <b> C. LAMPIRAN LPJ</b>
+                    </div>
+                @endif
+                @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
+                        Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
+                    <button class="btn btn-outline-success btn-sm tombol-tambah" data-toggle="modal"
+                        wire:click="modal_umum_lpj_tambah" data-target="#modal_umum_lpj_tambah" type="button"><i
+                            class="fas fa-plus-circle"></i>
+                        Tambah</button>
+                @endif
+            </div>
+            {{-- end judul --}}
 
+            {{-- alert --}}
+            @if (session()->has('alert_lpj'))
+                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                    <i class="far fa-check-circle"></i> {{ session('alert_lpj') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            {{-- end alert --}}
 
+            {{-- tabel --}}
             {{-- tabel dokumentasi --}}
             <table class="table table-bordered mt-2 mb-2" style="width:100%">
                 <thead>
                     <tr class="text-center">
                         <th style="width: 5%;">No</th>
-                        <th style="width: 40%">Judul</th>
+                        <th style="width: 50%">Judul</th>
                         <th>File</th>
-                        <th>Waktu Upload</th>
+                        @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
+                                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
+                            <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
 
-                    @forelse($lampiran as $a)
-                        {{-- @php
-                        dd($a);
-                    @endphp --}}
+                    @forelse($lpj as $a)
                         <tr>
                             <td>
                                 {{ $loop->iteration }}
                             </td>
                             <td>
-                                {{ $a->judul }} <br>
-                                {{-- <span style="font-size: 10pt">Diinput Oleh :
-                                    {{ $this->nama_pengurus_pc($a->maker_tingkat_pc) }}
-                                    ({{ $this->jabatan_pengurus_pc($a->maker_tingkat_pc) }})
-                                </span> --}}
+                                {{ $a->judul_lpj }} <br>
                             </td>
                             <td>
-                                <a href="{{ asset('uploads/pengajuan_lampiran/' . $a->file) }}" target="_blank">
-                                    {{ $a->file }}
+                                <a href="{{ asset('uploads/pengajuan_lpj/' . $a->file_lpj) }}" target="_blank">
+                                    {{ $a->file_lpj }}
                                 </a>
                             </td>
-                            <td>
-                                {{ \Carbon\Carbon::parse($a->created_at)->format('d/m/Y H:i:s') }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center"> Belum ada data</td>
-                        </tr>
-                    @endforelse
-
-
-                </tbody>
-            </table>
-            {{-- end tabel --}}
-        </div>
-
-
-        <div>
-            <b class="ml-2"> D. LAMPIRAN SURVEY
-            </b>
-        </div>
-
-        {{-- penerima manfaat --}}
-        <div class="col-sm-12 col-lg-12 col-md-12 mt-2">
-            <table class="table table-bordered table-hover mt-2" style="width:100%">
-                <thead>
-                    <tr class="text-center">
-                        <th style="width: 10px;vertical-align:middle;">No</th>
-                        <th style="width: 25%;vertical-align:middle;">Penerima Manfaat</th>
-                        <th style="width: 20%;vertical-align:middle;">Alamat & No HP</th>
-                        <th style="width: 20%;vertical-align:middle;">Nominal & Jenis Permohonan</th>
-                        <th style="width: 20%;vertical-align:middle;">Keterangan</th>
-                        @if ($data_detail->approval_status == 'Disetujui')
-                            <th style="width: 35%;vertical-align:middle;">Survey</th>
-                        @endif
-                        @if ($data_detail->pil_survey == 'Perlu')
-                            @if (count($penerima) > 0)
-                                <th style="vertical-align:middle;">Aksi</th>
-                            @endif
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($penerima as $a)
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center"> Belum ada data</td>
-                        </tr>
-                    @endforelse
-                    @foreach ($penerima as $a)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td><b style="font-size:16px;">{{ $a->nama }}</b> <br>
-                                NIK: {{ $a->nik ?? '-' }} <br>
-                                KK: {{ $a->nokk ?? '-' }}
-                                {{-- <span style="font-size: 10pt">Diinput Oleh :
-                            {{ $this->nama_pengurus_pc($a->maker_tingkat_pc) }}
-                            ({{ $this->jabatan_pengurus_pc($a->maker_tingkat_pc) }})
-                        </span> --}}
-                            </td>
-                            <td> <b style="font-size:16px;">{{ $a->alamat ?? '-' }}</b> <br>
-                                No HP: {{ $a->nohp ?? '-' }}</td>
-                            <td class="text-left">
-                                <b style="font-size:16px;">Rp{{ number_format($a->nominal_bantuan, 0, '.', '.') }},-
-                                </b> <br>
-                                Jenis Bantuan: {{ $a->jenis_bantuan ?? '-' }}
-                            </td>
-                            {{-- <td>{{ $a->keterangan }}</td> --}}
-
-                            <td><b style="font-size:16px;">{{ $a->keterangan ?? '-' }}</b> <br>
-                            </td>
-                            @if ($data_detail->approval_status == 'Disetujui')
-                                <td>
-                                    @if ($data_detail->pil_survey == 'Perlu')
-                                        @php
-                                            $tgl = App\Models\SurveyPenerimaManfaat::where('id_penerima_manfaat', $a->id_pengajuan_penerima)->first();
-                                        @endphp
-                                       @if ($tgl && $tgl->tanggal_survey)
-                                            {{ Carbon\Carbon::parse($tgl->tanggal_survey)->isoFormat('dddd, D MMMM Y') ?? '' }}
-                                            <br>
-                                        @endif
-
-                                        @php
-                                            $pengajuanSurvey = DB::table('survey_penerima_manfaat')
-                                                ->leftjoin('pengajuan_penerima', 'pengajuan_penerima.id_pengajuan_penerima', '=', 'survey_penerima_manfaat.id_penerima_manfaat')
-                                                ->where('pengajuan_penerima.id_pengajuan_penerima', $a->id_pengajuan_penerima)
-                                                ->where('pengajuan_penerima.id_pengajuan', $data_detail->id_pengajuan)
-                                                ->where('pengajuan_penerima.id_pengajuan_detail', $data_detail->id_pengajuan_detail)
-                                                ->first();
-                                        @endphp
-
-                                        @if ($pengajuanSurvey)
-                                            @if ($pengajuanSurvey->hasil == 'disetujui')
-                                                <span class="badge badge-success"
-                                                    style="font-size: 14px;">Disetujui</span>
-                                            @elseif($pengajuanSurvey->hasil == 'ditolak')
-                                                <span class="badge badge-danger"
-                                                    style="font-size: 14px;">Ditolak</span>
-                                            @endif
-                                        @else
-                                            <span class="badge badge-secondary" style="font-size: 14px;">Belum
-                                                Direspon</span>
-                                        @endif
-                                    @endif
-
-                                </td>
-                            @endif
-                            @if ($data_detail->pil_survey == 'Perlu')
+                            @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
+                                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
                                 <td>
                                     <!-- tombol aksi -->
                                     <div class="btn-group">
-                                        <button type="button" class=" btn btn-success btn-sm" data-toggle="dropdown"
+                                        <button type="button" class="btn btn-success btn-sm" data-toggle="dropdown"
                                             aria-haspopup="true" aria-expanded="false">Kelola</button>
                                         <button type="button"
-                                            class=" btn btn-success dropdown-toggle dropdown-toggle-split btn-sm"
+                                            class="btn btn-success dropdown-toggle dropdown-toggle-split btn-sm"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="sr-only">Toggle
                                                 Dropdown</span>
                                         </button>
-
                                         <div class="dropdown-menu">
+                                            <a onMouseOver="this.style.color='blue'"
+                                                onMouseOut="this.style.color='black'"
+                                                class="dropdown-item tombol-ubah tombol-tambah"
+                                                wire:click="modal_umum_lpj_ubah('{{ $a->id_pengajuan_lpj }}','{{ $a->file }}')"
+                                                type="button" data-toggle="modal"
+                                                data-target="#modal_umum_lpj_ubah"><i class="fas fa-edit"></i>
+                                                Ubah</a>
+                                            <a onMouseOver="this.style.color='red'"
+                                                onMouseOut="this.style.color='black'" class="dropdown-item"
+                                                wire:click="modal_umum_lpj_hapus('{{ $a->id_pengajuan_lpj }}','{{ $a->file }}')"
+                                                data-toggle="modal" data-target="#modal_umum_lpj_hapus"
+                                                type="button"><i class="fas fa-trash"></i>
+                                                Hapus</a>
+                                            <a href="/pc/unduh-lpj/{{ $a->id_pengajuan_lpj }}"
+                                                onMouseOver="this.style.color='green'"
+                                                onMouseOut="this.style.color='black'" class="dropdown-item"
+                                                type="button">
+                                                <i class="fa fa-download"></i> Cetak
+                                            </a>
 
-                                            @if ($data_detail->pil_survey == 'Perlu')
-                                                @if (Auth::user()->gocap_id_pc_pengurus != $data->pj_pc and $this->kelolaSurvey($a->id_pengajuan_penerima) == 0)
-                                                    @if ($this->kelolaSurvey($a->id_pengajuan_penerima) == 1)
-                                                        <a onMouseOver="this.style.color='orange'"
-                                                            onMouseOut="this.style.color='black'"
-                                                            class="dropdown-item tombol-orange"
-                                                            wire:click="belum_survey()">
-                                                            <i class="fas fa-print" style="width: 20px"></i>Cetak
-                                                            Survey</a>
-                                                    @endif
-                                                @else
-                                                    @if ($this->kelolaSurvey($a->id_pengajuan_penerima) == 1)
-                                                        <a onMouseOver="this.style.color='orange'"
-                                                            onMouseOut="this.style.color='black'"
-                                                            class="dropdown-item tombol-orange" target="_blank"
-                                                            {{-- wire:click="ngok('{{ $a->id_pengajuan_penerima }}')" --}}
-                                                            href="/pc/survey/{{ $a->id_pengajuan_penerima }}"><i
-                                                                class="fas fa-print" style="width: 20px"></i>Cetak
-                                                            Survey</a>
-                                                    @endif
-                                                @endif
-                                            @endif
                                         </div>
-
                                     </div>
                                     {{-- end tombol aksi --}}
                                 </td>
                             @endif
+
+
                         </tr>
-                    @endforeach
-                    {{-- {{ dd($data_detail->id_pengajuan); }} --}}
+                    @empty
+                        @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
+                                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
+                            <tr>
+                                <td colspan="4" class="text-center"> Belum ada data</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="3" class="text-center"> Belum ada data</td>
+                            </tr>
+                        @endif
+                    @endforelse
+
+
                 </tbody>
             </table>
             {{-- end tabel --}}
         </div>
-        {{-- end penerima manfaat --}}
 
-        <div>
-            <b class="ml-2"> E. LAMPIRAN PENCAIRAN
-            </b>
-        </div>
-        <div class="col-sm-12 col-lg-12 col-md-12 mt-2 tab-tab-daftar-penerima-manfaat-pengajuan-umum-pc">
-            <table class="table table-bordered table-hover mt-2" style="width:100%">
-                <thead>
-                    <tr class="text-center">
-                        <th style="width: 5%;vertical-align:middle;">No</th>
-                        <th style="width: 30%;vertical-align:middle;">Judul</th>
-                        <th style="width: 30%;vertical-align:middle;">Pembuat</th>
-                        <th style="width: 25%;vertical-align:middle;">File</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($lampiran_pencairan as $lp)
-                        {{-- @php
-                        dd($lp);
-                    @endphp --}}
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center"> Belum ada data</td>
-                        </tr>
-                    @endforelse
-                    @foreach ($lampiran_pencairan as $lp)
-                        <tr>
-                            <td style="text-align:center;">{{ $loop->iteration }}</td>
-                            <td><b style="font-size:16px;">{{ $lp->judul }}</b>
-                            </td>
-                            @php
-                                $nama_pembuat = App\Models\Pengguna::where('gocap_id_pc_pengurus', $lp->id_pengurus_pc)->value('nama');
-                                $id_jabatan = App\Models\PcPengurus::where('id_pc_pengurus', $lp->id_pengurus_pc)->value('id_pengurus_jabatan');
-                                $jabatan = App\Models\JabatanPengurus::where('id_pengurus_jabatan', $id_jabatan)->value('jabatan');
-                            @endphp
-                            <td class="text-left">
-                                <b style="font-size:16px;">{{ $nama_pembuat . ' (' . $jabatan . ')' }}
-                            </td>
-
-
-                            <td><b style="font-size:16px;"><a target="_blank"
-                                        href="{{ asset('uploads/lampiran_pencairan/' . $lp->file) }}">{{ $lp->file }}</a></b>
-                                <br>
-                                {{ Carbon\Carbon::parse($lp->created_at)->isoFormat('dddd, D MMMM Y') }}
-                            </td>
-                        </tr>
-                    @endforeach
-
-                     </tbody>
-            </table>
-                    {{-- end tabel --}}
-        </div>
-        @endif
-        
-        <div class="col-sm-12 mt-3 col-md-12 col-lg-12 tab-tab-lampiran-pengajuan-umum-pc">
-        {{-- judul --}}
-        <div class="d-flex justify-content-between align-items-center">
-            @if (Auth::user()->gocap_id_pc_pengurus == '9f14046b-a733-4ef8-a3a4-db8185a889e8')
-            <div>
-                <b> F. LAMPIRAN LPJ</b>
-            </div>
-            @else
-            <div>
-                <b> C. LAMPIRAN LPJ</b>
-            </div>
-            @endif
-            @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
-                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
-                <button class="btn btn-outline-success btn-sm tombol-tambah" data-toggle="modal"
-                    wire:click="modal_umum_lpj_tambah" data-target="#modal_umum_lpj_tambah" type="button"><i
-                        class="fas fa-plus-circle"></i>
-                    Tambah</button>
-            @endif
-        </div>
-        {{-- end judul --}}
-
-        {{-- alert --}}
-        @if (session()->has('alert_lpj'))
-            <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
-                <i class="far fa-check-circle"></i> {{ session('alert_lpj') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
-        {{-- end alert --}}
-
-        {{-- tabel --}}
-        {{-- tabel dokumentasi --}}
-        <table class="table table-bordered mt-2 mb-2" style="width:100%">
-            <thead>
-                <tr class="text-center">
-                    <th style="width: 5%;">No</th>
-                    <th style="width: 50%">Judul</th>
-                    <th>File</th>
-                     @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
-                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
-                    <th>Aksi</th>
-                    @endif
-                </tr>
-            </thead>
-            <tbody>
-
-                @forelse($lpj as $a)
-                    <tr>
-                        <td>
-                            {{ $loop->iteration }}
-                        </td>
-                        <td>
-                            {{ $a->judul_lpj }} <br>
-                        </td>
-                        <td>
-                            <a href="{{ asset('uploads/pengajuan_lpj/' . $a->file_lpj) }}" target="_blank">
-                                {{ $a->file_lpj }}
-                            </a>
-                        </td>
-                         @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
-                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
-                        <td>
-                            <!-- tombol aksi -->
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-success btn-sm" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">Kelola</button>
-                                <button type="button"
-                                    class="btn btn-success dropdown-toggle dropdown-toggle-split btn-sm"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="sr-only">Toggle
-                                        Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a onMouseOver="this.style.color='blue'" onMouseOut="this.style.color='black'"
-                                        class="dropdown-item tombol-ubah tombol-tambah"
-                                        wire:click="modal_umum_lpj_ubah('{{ $a->id_pengajuan_lpj }}','{{ $a->file }}')"
-                                        type="button" data-toggle="modal" data-target="#modal_umum_lpj_ubah"><i
-                                            class="fas fa-edit"></i>
-                                        Ubah</a>
-                                    <a onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'"
-                                        class="dropdown-item"
-                                        wire:click="modal_umum_lpj_hapus('{{ $a->id_pengajuan_lpj }}','{{ $a->file }}')"
-                                        data-toggle="modal" data-target="#modal_umum_lpj_hapus" type="button"><i
-                                            class="fas fa-trash"></i>
-                                        Hapus</a>
-                                    <a href="/pc/unduh-lpj/{{ $a->id_pengajuan_lpj }}"
-                                        onMouseOver="this.style.color='green'" onMouseOut="this.style.color='black'"
-                                        class="dropdown-item" type="button">
-                                        <i class="fa fa-download"></i> Cetak
-                                    </a>
-
-                                </div>
-                            </div>
-                            {{-- end tombol aksi --}}
-                        </td>
-                        @endif
-
-
-                    </tr>
-                @empty
-                 @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
-                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
-                    <tr>
-                        <td colspan="4" class="text-center"> Belum ada data</td>
-                    </tr>
-                    @else
-                    <tr>
-                        <td colspan="3" class="text-center"> Belum ada data</td>
-                    </tr>
-                    @endif
-                @endforelse
-
-
-            </tbody>
-        </table>
-        {{-- end tabel --}}
-    </div>
-    
-    <div class="col-sm-12 mt-3 col-md-12 col-lg-12 tab-tab-lampiran-pengajuan-umum-pc1">
+        <div class="col-sm-12 mt-3 col-md-12 col-lg-12 tab-tab-lampiran-pengajuan-umum-pc1">
             {{-- judul --}}
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -1379,12 +1431,12 @@
                                     <td style="25%">{{ $datab->keterangan ?? '-' }}</td>
                                     <td style="12%">{{ $datab->dibayarkan_kepada ?? '-' }}</td>
                                     <td style="13%"><a class="text-primary"
-                                        href="{{ asset('uploads/penggunaan_dana_umum/' . $datab->nota) }}"
-                                        target="_blank">Nota/Kwitansi</a> <br>
+                                            href="{{ asset('uploads/penggunaan_dana_umum/' . $datab->nota) }}"
+                                            target="_blank">Nota/Kwitansi</a> <br>
                                         <a class="text-primary"
-                                        href="{{ asset('uploads/foto_kegiatan_umum/' . $datab->foto_kegiatan) }}"
-                                        target="_blank">Foto Barang</a>
-                                </td>
+                                            href="{{ asset('uploads/foto_kegiatan_umum/' . $datab->foto_kegiatan) }}"
+                                            target="_blank">Foto Barang</a>
+                                    </td>
                                     <td style="13%">Rp {{ number_format($datab->nominal), 0, '.', '.' }},-
                                     </td>
                                     <td style="width: 15%">
@@ -1453,7 +1505,7 @@
         Livewire.on('dataTersimpanLpj', () => {
             $('#edit_berita_pengajuan').modal('hide');
         });
-        
+
         Livewire.on('dataTersimpanTambahLPJ', () => {
             $('#modal_umum_lpj_tambah').modal('hide');
         });

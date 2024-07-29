@@ -162,6 +162,7 @@ class DetailPc extends Component
     public $ringkasan;
     
     public $none_block_acc_ketua = 'none';
+    public $none_block_tolak_ketua = 'none';
     public $approval_date_ketua;
     public $catatan_ketua;
     public $status_ketua;
@@ -325,6 +326,10 @@ class DetailPc extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
+    public $keterangan_tolak_ketua;
+    public $tgl_tolak_ketua;
+    public $tolak_ketua;
+
     public function mount()
     {
         $this->etasyaruf = config('app.database_etasyaruf');
@@ -337,6 +342,7 @@ class DetailPc extends Component
         $this->none_block_survey = 'none';
         $this->none_block_acc = 'none';
         $this->none_block_tolak = 'none';
+        $this->none_block_tolak_ketua = 'none';
         $this->tgl_survey = date('Y-m-d');
         $this->tgl_penyaluran = now()->timezone('Asia/Jakarta')->format('Y-m-d');
 
@@ -2448,6 +2454,7 @@ class DetailPc extends Component
         $this->emit('waktu_alert');
     }
 
+    
 
     public function tolak()
     {
@@ -2464,12 +2471,12 @@ class DetailPc extends Component
 
         // fo
         $front = DB::table($this->gocap . '.pengurus_jabatan as pj')
-    ->where('pj.tingkat', 'pc')
-    ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
-    ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
-    ->where('pp.status', '1')
-    ->select('pp.id_pc_pengurus')
-    ->first();
+                ->where('pj.tingkat', 'pc')
+                ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
+                ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
+                ->where('pp.status', '1')
+                ->select('pp.id_pc_pengurus')
+                ->first();
     // dd($front);
 
         $asnaf = DB::table('asnaf')->where('id_asnaf', $data_detail->id_asnaf)->value('nama_asnaf');
@@ -2825,6 +2832,105 @@ class DetailPc extends Component
         }
     }
 
+    public function tombol_tolak_ketua()
+    {
+        $this->none_block_acc = 'none';
+        $this->none_block_tolak_program = 'none';
+        $this->none_block_acc_ketua = 'none';
+        $this->none_block_acc_program = 'none';
+        $this->none_block_tolak = 'none';
+
+        if ($this->none_block_tolak_ketua == 'none') {
+            $this->none_block_tolak_ketua = 'block';
+        } elseif ($this->none_block_tolak_ketua == 'block') {
+            $this->none_block_tolak_ketua = 'none';
+        }
+
+        $data = PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
+        $this->tgl_tolak_ketua = date('Y-m-d');
+
+        if ($data->keterangan_tolak_ketua == NULL) {
+            $this->keterangan_tolak_ketua = NULL;
+        } else {
+            $this->keterangan_tolak_ketua = $data->keterangan_tolak_ketua;
+        }
+    }
+
+    public function tolak_ketua()
+    {
+        $data = DB::table($this->etasyaruf . '.pengajuan')->where('id_pengajuan', $this->id_pengajuan)->first();
+
+        PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->update([
+            'tgl_tolak_ketua' => $this->tgl_tolak_ketua,
+            'keterangan_tolak_ketua' => $this->keterangan_tolak_ketua,
+            'status_ketua' => 'Ditolak',
+            'tolak_ketua' => Auth::user()->gocap_id_pc_pengurus,
+        ]);
+        
+        $data_detail = DB::table($this->etasyaruf . '.pengajuan_detail')->where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
+
+        $front = DB::table($this->gocap . '.pengurus_jabatan as pj')
+                ->where('pj.tingkat', 'pc')
+                ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
+                ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
+                ->where('pp.status', '1')
+                ->select('pp.id_pc_pengurus')
+                ->first();
+
+        $D_ajuan = PengajuanDetail::where('id_pengajuan', $data_detail->id_pengajuan)->first();
+        $ajuan = Pengajuan::where('id_pengajuan', $data_detail->id_pengajuan)->first();
+
+        if ($ajuan->opsi_pemohon == "Individu") {
+            $pemohon = $D_ajuan->nama_pemohon;
+        } elseif ($ajuan->opsi_pemohon == "Entitas") {
+            $pemohon = $D_ajuan->nama_entitas;
+        } elseif ($ajuan->opsi_pemohon == "Internal") {
+            $pemohon = $this->nama_pengurus_pc($ajuan->pemohon_internal);
+        }
+
+        // kirim notif wa
+        $url =  "https://e-tasyaruf.nucarecilacap.id/pc/detail-pengajuan-pc/" . $this->id_pengajuan;
+
+        $asnaf = DB::table('asnaf')->where('id_asnaf', $D_ajuan->id_asnaf)->value('nama_asnaf');
+
+        // petugas penyaluran
+        $this->notif(
+            // Helper::getNohpPengurus('pc', $front->id_pc_pengurus),
+            '089639481199',
+
+            "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
+
+                "Yth. " . "*" . $this->nama_pengurus_pc($front->id_pc_pengurus) .  "*" . "\n" .
+                $this->jabatan_pengurus_pc($front->id_pc_pengurus) . "\n" . "\n" .
+
+                "*" .  "Mohon segera ditinjau kembali"  . "*" .  "\n" .
+                "Pengajuan UMUM PC Lazisnu Cilacap telah " . "*" . "di-tolak" . "*" . " oleh Ketua Lazisnu Cilacap, dengan detail sebagai berikut :" . "\n" . "\n" .
+                "*" .  "Nomor"  . "*" .  "\n" .
+                $ajuan->nomor_surat  . "\n" .
+                "*" .  "Tanggal Pengajuan"  . "*" .  "\n" .
+                \Carbon\Carbon::parse($ajuan->tgl_pengajuan)->isoFormat('D MMMM Y')  .  "\n" .
+                "*" .  "Nama Pemohon"  . "*" .  "\n" .
+                $ajuan->opsi_pemohon . " - " . $pemohon  .  "\n" .
+                "*" .  "Nominal Diajukkan"  . "*" .  "\n" .
+                'Rp' . number_format($D_ajuan->nominal_pengajuan * $D_ajuan->jumlah_penerima, 0, '.', '.') . ',-' . "(" . $D_ajuan->nominal_pengajuan . "x" . $D_ajuan->jumlah_penerima . "penerima )" . "\n" . "\n" .
+                "========================" . "\n" . "\n" .
+                "*" .  "Asnaf"  . "*" .  "\n" .
+                $asnaf .  "\n" .
+                "*" .  "Pilar"  . "*" .  "\n" .
+                $this->nama_pilars($D_ajuan->id_program_pilar) .  "\n" .
+                $this->nama_kegiatan($D_ajuan->id_program_kegiatan) .  "\n" .
+                "*" .  "Keterangan Penolakan"  . "*" .  "\n" .
+                $D_ajuan->keterangan_tolak_ketua .  "\n" . "\n" .
+
+                "Terima Kasih." . "\n" . "\n" .
+                url($url)
+        );
+
+        $this->none_block_tolak_ketua = 'none';
+        session()->flash('alert_ketua', 'Pengajuan Berhasil Ditolak');
+        $this->emit('waktu_alert');
+    }
+
     public function tombol_tolak_direktur_keuangan()
     {
         $this->none_block_acc = 'none';
@@ -3015,6 +3121,7 @@ class DetailPc extends Component
         $this->none_block_acc_direktur_keuangan = 'none';
         $this->none_block_terbit = 'none';
         $this->none_block_acc_ketua = 'none';
+        $this->none_block_tolak_ketua = 'none';
     }
     
     public function acc_ketua()

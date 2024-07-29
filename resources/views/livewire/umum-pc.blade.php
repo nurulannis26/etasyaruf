@@ -520,6 +520,8 @@
                                 @elseif($a->respon_ketua != 'Tidak Perlu' and $a->status_ketua == 'Belum Direspon')
                                     <sup class="text-light badge badge-warning">Ketua Blm Merespon
                                     </sup>
+                                @elseif ($a->status_ketua == 'Ditolak')
+                                    <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
                                 @endif
                             @endif
 
@@ -856,42 +858,45 @@
                             </div>
 
                             @php
-                                    $totalDigunakan = App\Models\lpjUmum::where('id_pengajuan_detail', $a->id_pengajuan_detail)->sum('nominal');
-                                    if ($a->nominal_pencairan == null || $a->nominal_pencairan == '') {
-                                        $sisaNominal = $a->nominal_disetujui - $totalDigunakan;
-                                    } else {
-                                        $sisaNominal = $a->nominal_pencairan - $totalDigunakan;
-                                    }
-                                    
-                                    if ($sisaNominal < 0) {
-                                        $format_sisa_dana = '-Rp' . number_format(abs($sisaNominal), 0, '.', '.') ;
-                                        $warna = 'danger';
-                                    } else {
-                                        $format_sisa_dana = 'Rp' . number_format($sisaNominal, 0, '.', '.');
-                                        $warna = 'black';
-                                    }
-                                @endphp
+                                $totalDigunakan = App\Models\lpjUmum::where(
+                                    'id_pengajuan_detail',
+                                    $a->id_pengajuan_detail,
+                                )->sum('nominal');
+                                if ($a->nominal_pencairan == null || $a->nominal_pencairan == '') {
+                                    $sisaNominal = $a->nominal_disetujui - $totalDigunakan;
+                                } else {
+                                    $sisaNominal = $a->nominal_pencairan - $totalDigunakan;
+                                }
 
-                                <div class="row text-right mt-1">
-                                    <div class="col text-bold  text-left" style="font-size: 10pt;">
-                                        Digunakan
-                                    </div>
-                                    <div class="col text-bold text-right" style="font-size: 10pt;">
-                                        <b class="text-success" style="font-size: 10pt;">
-                                            Rp{{ number_format($totalDigunakan), 0, '.', '.' }}
-                                        </b>
-                                    </div>
+                                if ($sisaNominal < 0) {
+                                    $format_sisa_dana = '-Rp' . number_format(abs($sisaNominal), 0, '.', '.');
+                                    $warna = 'danger';
+                                } else {
+                                    $format_sisa_dana = 'Rp' . number_format($sisaNominal, 0, '.', '.');
+                                    $warna = 'black';
+                                }
+                            @endphp
+
+                            <div class="row text-right mt-1">
+                                <div class="col text-bold  text-left" style="font-size: 10pt;">
+                                    Digunakan
                                 </div>
-                                <div class="row text-right">
-                                    <div class="col text-bold  text-left" style="font-size: 10pt;">
-                                        Tersisa
-                                    </div>
-                                    <div class="col text-bold text-right" style="font-size: 10pt;">
-                                        <b class="text-{{ $warna }}" style="font-size: 10pt;">
-                                            {{ $format_sisa_dana }}
-                                        </b>
-                                    </div>
+                                <div class="col text-bold text-right" style="font-size: 10pt;">
+                                    <b class="text-success" style="font-size: 10pt;">
+                                        Rp{{ number_format($totalDigunakan), 0, '.', '.' }}
+                                    </b>
                                 </div>
+                            </div>
+                            <div class="row text-right">
+                                <div class="col text-bold  text-left" style="font-size: 10pt;">
+                                    Tersisa
+                                </div>
+                                <div class="col text-bold text-right" style="font-size: 10pt;">
+                                    <b class="text-{{ $warna }}" style="font-size: 10pt;">
+                                        {{ $format_sisa_dana }}
+                                    </b>
+                                </div>
+                            </div>
 
 
                         </td>

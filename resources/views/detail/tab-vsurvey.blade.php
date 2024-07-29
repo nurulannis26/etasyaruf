@@ -75,13 +75,15 @@
                     </sup>
                 @endif
             @endif
-            
+
             @if ($data_detail->approval_status_divpro == 'Disetujui')
                 @if ($data_detail->status_ketua == 'Disetujui')
                     <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
                 @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
                     <sup class="text-light badge badge-warning">Ketua Blm Merespon
                     </sup>
+                @elseif ($data_detail->status_ketua == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
                 @endif
             @endif
 
@@ -89,7 +91,6 @@
                 @if ($data_detail->respon_ketua == 'Tidak Perlu')
                     <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
                 @else
-                    
                 @endif
             @endif
 
@@ -150,24 +151,24 @@
             {{-- {{ dd($data_detail) }} --}}
 
 
-                @if ($data_detail->approval_status == 'Disetujui')
-            @if ($data_detail->berita_konfirmasi_pc)
-                <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">LPJ Blm Dikonfirmasi Div. Penyaluran
-                </sup>
-            @endif
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->berita_konfirmasi_pc)
+                    <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">LPJ Blm Dikonfirmasi Div. Penyaluran
+                    </sup>
+                @endif
 
 
-            @if ($data_detail->konfirmasi_lpj_div_prog != 'Dikonfirmasi')
-                <sup class="text-light badge badge-warning">LPJ Blm Diperiksa Div. Program
-                </sup>
-            @else
-                <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
-                </sup>
+                @if ($data_detail->konfirmasi_lpj_div_prog != 'Dikonfirmasi')
+                    <sup class="text-light badge badge-warning">LPJ Blm Diperiksa Div. Program
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
+                    </sup>
+                @endif
             @endif
-         @endif
 
 
             {{-- END badge --}}
@@ -317,14 +318,15 @@
             @endif
 
             @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' ||
-                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' || Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
-            <a href="/pc/tampil_penerima_manfaat/{{ $dp->id_pengajuan }}" target="_blank"
-                class="btn btn-outline-success btn-sm tombol-cetak ml-auto mr-2" type="button"><i
-                    class="fa fa-file-pdf"></i>
-                &nbsp;Cetak</a>
-                <button class="btn btn-outline-success btn-sm tombol-tambah" class="btn btn-primary"
-                    data-toggle="modal" wire:click="modal_pengajuan_penerima_manfaat"
-                    data-target="#modal_pengajuan_penerima_manfaat2" type="button"><i class="fas fa-plus-circle"></i>
+                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
+                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
+                <a href="/pc/tampil_penerima_manfaat/{{ $dp->id_pengajuan }}" target="_blank"
+                    class="btn btn-outline-success btn-sm tombol-cetak ml-auto mr-2" type="button"><i
+                        class="fa fa-file-pdf"></i>
+                    &nbsp;Cetak</a>
+                <button class="btn btn-outline-success btn-sm tombol-tambah" class="btn btn-primary" data-toggle="modal"
+                    wire:click="modal_pengajuan_penerima_manfaat" data-target="#modal_pengajuan_penerima_manfaat2"
+                    type="button"><i class="fas fa-plus-circle"></i>
                     Tambah</button>
             @endif
         </div>
@@ -414,19 +416,30 @@
 
                             @if ($data_detail->pil_survey == 'Perlu')
                                 @php
-                                    $tgl = App\Models\SurveyPenerimaManfaat::where('id_penerima_manfaat', $a->id_pengajuan_penerima)->first();
+                                    $tgl = App\Models\SurveyPenerimaManfaat::where(
+                                        'id_penerima_manfaat',
+                                        $a->id_pengajuan_penerima,
+                                    )->first();
                                 @endphp
-                             @if ($tgl && $tgl->tanggal_survey)
+                                @if ($tgl && $tgl->tanggal_survey)
                                     {{ Carbon\Carbon::parse($tgl->tanggal_survey)->isoFormat('dddd, D MMMM Y') ?? '' }}
                                     <br>
                                 @endif
 
                                 @php
                                     $pengajuanSurvey = DB::table('survey_penerima_manfaat')
-                                        ->leftjoin('pengajuan_penerima', 'pengajuan_penerima.id_pengajuan_penerima', '=', 'survey_penerima_manfaat.id_penerima_manfaat')
+                                        ->leftjoin(
+                                            'pengajuan_penerima',
+                                            'pengajuan_penerima.id_pengajuan_penerima',
+                                            '=',
+                                            'survey_penerima_manfaat.id_penerima_manfaat',
+                                        )
                                         ->where('pengajuan_penerima.id_pengajuan_penerima', $a->id_pengajuan_penerima)
                                         ->where('pengajuan_penerima.id_pengajuan', $data_detail->id_pengajuan)
-                                        ->where('pengajuan_penerima.id_pengajuan_detail', $data_detail->id_pengajuan_detail)
+                                        ->where(
+                                            'pengajuan_penerima.id_pengajuan_detail',
+                                            $data_detail->id_pengajuan_detail,
+                                        )
                                         ->first();
                                     // dd($a->id_pengajuan_penerima .'/////'. $data_detail->id_pengajuan  .'/////'. $data_detail->id_pengajuan_detail);
                                     // dd($pengajuanSurvey->hasil);
@@ -527,20 +540,25 @@
 
 <div class="col-sm-12 col-lg-12 col-md-12 mt-2 tab-tab-daftar-penerima-manfaat-pengajuan-umum-pc">
     {{-- judul --}}
-        <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <b>B. DOKUMENTASI SURVEY</b>
             </div>
         </div>
-    
+
         <div class="ml-auto d-flex">
-            <a class="btn btn-outline-success btn-sm" href="{{ route('cetak_dokumen_survey', ['id_pengajuan_detail' => $this->id_pengajuan_detail]) }}" target="_blank">
+            <a class="btn btn-outline-success btn-sm"
+                href="{{ route('cetak_dokumen_survey', ['id_pengajuan_detail' => $this->id_pengajuan_detail]) }}"
+                target="_blank">
                 <i class="fas fa-print"></i> Cetak
-            </a>            
-    
-            @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' || Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3')
-                <button class="btn btn-outline-success btn-sm tombol-tambah ml-2" wire:click="modal_dokumentasi_survey_tambah" data-toggle="modal" data-target="#modal_dokumentasi_survey_tambah" type="button">
+            </a>
+
+            @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' ||
+                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3')
+                <button class="btn btn-outline-success btn-sm tombol-tambah ml-2"
+                    wire:click="modal_dokumentasi_survey_tambah" data-toggle="modal"
+                    data-target="#modal_dokumentasi_survey_tambah" type="button">
                     <i class="fas fa-plus-circle"></i> Tambah
                 </button>
             @endif
@@ -583,8 +601,8 @@
                 {{-- <th style="width: 30%;vertical-align:middle;">Pembuat</th> --}}
                 <th style="width: 25%;vertical-align:middle;">File</th>
                 @if (count($dokumentasi_survey) > 0)
-                @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' ||
-                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3')
+                    @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' ||
+                            Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3')
                         <th style="width: 10%;vertical-align:middle;">Aksi</th>
                     @endif
                 @endif
@@ -602,7 +620,7 @@
                     <td style="text-align:center;">{{ $loop->iteration }}</td>
                     <td><span style="font-size:16px;">{{ $ds->judul }}</span>
                     </td>
-                    
+
 
 
                     <td><span style="font-size:16px;"><a target="_blank"
@@ -612,7 +630,7 @@
                     </td>
 
                     @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' ||
-                    Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3')
+                            Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3')
                         <td style="text-align:center;">
                             <!-- tombol aksi -->
                             <div class="btn-group">
