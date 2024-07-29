@@ -11,7 +11,7 @@ class JurnalUmum extends Model
 
     protected $table = 'jurnal_umum';
     protected $primaryKey = 'id_jurnal_umum';
-    protected $connection = "n1651709_aset_keuangan";
+    protected $connection = "aset_keuangan";
     protected $guarded = [];
     public $incrementing = false;
 }
