@@ -522,8 +522,8 @@ function terbilang($nilai)
             <td style="width:250pt; vertical-align:top; position:relative;">
                 <div style="position:relative; text-align:center;">
                     @if ($data->nama1)
-                    <img src="{{ asset('images/ttd/stempel.png') }}" alt="Stempel" style="position:absolute; top:-10px; left:35%; transform:translateX(-50%); width:140px; height:90px;">
-                    <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_pihak }}" alt="Tanda tangan" width="100" height="70">
+                    <img src="{{ asset('images/ttd/stempel.png') }}" alt="Stempel" style="position:absolute; top:-10px; left:30%; transform:translateX(-50%); width:140px; height:90px;">
+                    <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_pihak }}" alt="Tanda tangan" width="110" height="100">
                     @else
                     <p
                                     style="margin-top:3pt; margin-bottom:0pt; text-align:center; line-height:125%; font-size:11pt;">

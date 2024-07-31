@@ -46,16 +46,46 @@
             </style>
 
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-12">
                     <label style="font-weight: normal;">Bank &nbsp;</label>
                     <br>
-                    @if (!empty($detail_jurnal) && !empty($detail_jurnal->bank))
+                    @if (count($bank) > 1)
                         @php
-                            $banks = \App\Models\Rekening::where('id_rekening', $detail_jurnal->bank)->first();
+                            $bank_details = [];
                         @endphp
-                        <label>{{ $banks->no_rekening ?? '' }} - {{ $banks->nama_rekening ?? '' }}</label>
+                        @foreach ($bank as $banks => $entries)
+                            @php
+                                $bank_info = \App\Models\Rekening::where('id_rekening', $banks)->first();
+                                if ($bank_info) {
+                                    // dd($bank_info);
+                                    $type = $bank_info->jenis_rekening == 'Bank' ? 'Transfer' : 'Tunai';
+                                    // dd($type);
+                                    $bank_details[] =
+                                        $bank_info->no_rekening .
+                                        ' - ' .
+                                        $bank_info->nama_rekening .
+                                        ' (' .
+                                        $type .
+                                        ') ';
+                                }
+                            @endphp
+                        @endforeach
+                        @if (count($bank_details) > 1)
+                            @foreach ($bank_details as $detail)
+                                <label>{{ $detail }}</label><br>
+                            @endforeach
+                        @else
+                            <label>{{ $bank_details[0] ?? '' }}</label>
+                        @endif
                     @else
-                        <label>Pembayaran Tunai</label>
+                        @if (!empty($detail_jurnal) && !empty($detail_jurnal->bank))
+                            @php
+                                $banks = \App\Models\Rekening::where('id_rekening', $detail_jurnal->bank)->first();
+                            @endphp
+                            <label>{{ $banks->no_rekening ?? '' }} - {{ $banks->nama_rekening ?? '' }}</label>
+                        @else
+                            <label>Pembayaran Tunai</label>
+                        @endif
                     @endif
                 </div>
             </div>

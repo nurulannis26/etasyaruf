@@ -398,7 +398,7 @@
                         $ttd_program = App\Http\Controllers\PrintController::ttd($data->approver_divpro);
                         $ttd_direktur = App\Http\Controllers\PrintController::ttd($data->approver_tingkat_pc);
                         $ttd_keuangan = App\Http\Controllers\PrintController::ttd($data->staf_keuangan_pc);
-                        // dd($ttd_program);
+                        //dd($ttd_pemohon, $ttd_program, $ttd_direktur, $ttd_keuangan);
                     @endphp
                     <td
                         style="width:65.5pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle;">
@@ -408,8 +408,8 @@
                         style="width:61.5pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
                         <p style="margin-top:15pt; margin-bottom:15pt; text-align:center; font-size:10pt;">
                             @if ($ttd_pemohon != '' || $ttd_pemohon != null)
-                                <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_pemohon }}"
-                                    alt="Tanda tangan" width="100" height="50">
+                                <img src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_pemohon }}"
+                                    alt="Tanda tangan" width="100" height="90">
                             @endif
                         </p>
                     </td>
@@ -431,8 +431,8 @@
                         <p style="margin-top:15pt; margin-bottom:15pt; text-align:center; font-size:10pt;">
                             @if ($data->approval_status_divpro == 'Disetujui')
                                 @if ($ttd_program != '' || $ttd_program != null)
-                                    <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_program }}"
-                                        alt="Tanda tangan" width="100" height="50">
+                                    <img src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_program }}"
+                                        alt="Tanda tangan" width="100" height="90">
                                 @endif
                             @endif
                         </p>
@@ -442,8 +442,8 @@
                         <p style="margin-top:15pt; margin-bottom:15pt; text-align:center; font-size:10pt;">
                             @if ($data->approval_status == 'Disetujui')
                                 @if ($ttd_direktur != '' || $ttd_direktur != null)
-                                    <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_direktur }}"
-                                        alt="Tanda tangan" width="100" height="50">
+                                    <img src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_direktur }}"
+                                        alt="Tanda tangan" width="100" height="90">
                                 @endif
                             @endif
                         </p>
@@ -453,8 +453,8 @@
                         <p style="margin-top:15pt; margin-bottom:15pt; text-align:center; font-size:10pt;">
                             @if ($data->pencairan_status == 'Berhasil Dicairkan')
                                 @if ($ttd_keuangan != '' || $ttd_keuangan != null)
-                                    <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_keuangan }}"
-                                        alt="Tanda tangan" width="100" height="50">
+                                    <img src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_keuangan }}"
+                                        alt="Tanda tangan" width="100" height="90">
                                 @endif
                             @endif
                         </p>

@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\DB;
 
 class PrintPenyaluranController extends Controller
 {
+    public static function ttd($id)
+    {
+        // dd($id);
+        $siftnu = config('app.database_siftnu');
+
+        $a = DB::table($siftnu . '.pengguna')->where('gocap_id_pc_pengurus', $id)
+            ->first();
+        // dd($a);
+        if ($a == NULL) {
+            return '-';
+        } else {
+            return $a->ttd;
+        }
+    }
+    
     public function print_penyaluran_dana($id_pengajuan)
     {
         $id_pengajuan = $id_pengajuan;
@@ -132,22 +147,24 @@ class PrintPenyaluranController extends Controller
         $etasyaruf = config('app.database_etasyaruf');
         $siftnu = config('app.database_siftnu');
         $gocap = config('app.database_gocap');
-        $jabatans = ['Kepala Cabang', 'Divisi Keuangan', 'Ketua Pengurus Harian'];
+        $id_jabatan = ['694f38af-5374-11ed-882e-e4a8df91d8b3', '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3', '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3'];
         $data_pengurus = [];
-        foreach ($jabatans as $jabatan) {
+        foreach ($id_jabatan as $jabatan) {
             $result = DB::table($gocap . '.pengurus_jabatan')
-                ->where('jabatan', $jabatan)
-                ->join($gocap . '.pc_pengurus', $gocap . '.pc_pengurus.id_pengurus_jabatan', '=', $gocap . '.pengurus_jabatan.id_pengurus_jabatan')
-                ->join($siftnu . '.pengguna', $siftnu . '.pengguna.gocap_id_pc_pengurus', '=', $gocap . '.pc_pengurus.id_pc_pengurus')
-                ->select($siftnu . '.pengguna.*')
-                ->first();
+                    ->where($gocap . '.pengurus_jabatan.id_pengurus_jabatan', $jabatan)
+                    ->join($gocap . '.pc_pengurus', $gocap . '.pengurus_jabatan.id_pengurus_jabatan', '=', $gocap . '.pc_pengurus.id_pengurus_jabatan')
+                    ->join($siftnu . '.pengguna', $gocap . '.pc_pengurus.id_pc_pengurus', '=', $siftnu . '.pengguna.gocap_id_pc_pengurus')
+                    ->select($siftnu . '.pengguna.*')
+                    ->first();
 
             $data_pengurus[$jabatan] = $result ? $result->nama : null;
+
+        
         }
 
-        $nama_direktur = $data_pengurus['Kepala Cabang'];
-        $nama_keuangan = $data_pengurus['Divisi Keuangan'];
-        $nama_ketua = $data_pengurus['Ketua Pengurus Harian'];
+        $nama_direktur = $data_pengurus['8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3'];
+        $nama_keuangan = $data_pengurus['694f38af-5374-11ed-882e-e4a8df91d8b3'];
+        // $nama_ketua = $data_pengurus['c0e0faee-3590-11ed-9a47-e4a8df91d887'];
 
         $pdf = PDF::loadview(
             'disposisi_penyaluran.print_pencairan_dana',
@@ -162,7 +179,7 @@ class PrintPenyaluranController extends Controller
                 'lampiran_pencairan',
                 'nama_direktur',
                 'nama_keuangan',
-                'nama_ketua',
+                // 'nama_ketua',
             )
         )->setPaper('a4', 'portrait');
         return $pdf->stream()->withHeaders([

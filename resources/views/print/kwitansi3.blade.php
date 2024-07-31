@@ -223,7 +223,7 @@ function terbilang($nilai)
                     @if ($data_det->pencairan_status == 'Berhasil Dicairkan' and $data_det->terima_kwitansi == '1')
                         <div class="tanda-tangan">
                             <img style="margin-left: 5px"
-                                src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_pemohon }}"
+                                src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_pemohon }}"
                                 alt="Tanda tangan" width="100" height="50">
                         </div>
                     @else
@@ -253,7 +253,7 @@ function terbilang($nilai)
                     @if ($data_det->pencairan_status == 'Berhasil Dicairkan')
                         <div class="tanda-tangan">
                             <img style="margin-left: 5px"
-                                src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_keuangan }}"
+                                src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_keuangan }}"
                                 alt="Tanda tangan" width="100" height="50">
                              <img style="margin-left: 5px; position: absolute; margin-top: 0px; left:73%" src="{{ asset('images/stempel_keuangan.png') }}" alt="Stempel" width="100" height="50">
                             

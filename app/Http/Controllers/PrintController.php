@@ -726,6 +726,7 @@ class PrintController extends Controller
     public function rekomendasi($tipe, $id_pengajuan)
     {
         $data = DB::table($this->etasyaruf . '.pengajuan')->where('id_pengajuan', $id_pengajuan)->first();
+        // dd($data->pj_ranting);
         if ($tipe == 'bmt') {
             $rekening = PengajuanDetail::where('id_pengajuan', $id_pengajuan)
                 ->groupby($this->etasyaruf . '.pengajuan_detail.id_rekening')
@@ -1359,20 +1360,22 @@ class PrintController extends Controller
 
         $data = Internal::where('id_internal', $id_internal)->first();
 
-        $jabatans = ['Kepala Cabang', 'Divisi Keuangan', 'Divisi Program dan Administrasi Umum'];
+        // $jabatans = ['Kepala Cabang', 'Divisi Keuangan', 'Divisi Program dan Administrasi Umum'];
         $id_jabatan = ['694f38af-5374-11ed-882e-e4a8df91d8b3', '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3', '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3'];
         $data_pengurus = [];
         $data_jab = [];
 
-        foreach ($jabatans as $jabatan) {
+        foreach ($id_jabatan as $jabatan) {
             $result = DB::table($this->gocap . '.pengurus_jabatan')
-                ->where('jabatan', $jabatan)
-                ->join($this->gocap . '.pc_pengurus', $this->gocap . '.pc_pengurus.id_pengurus_jabatan', '=', $this->gocap . '.pengurus_jabatan.id_pengurus_jabatan')
-                ->join($this->siftnu . '.pengguna', $this->siftnu . '.pengguna.gocap_id_pc_pengurus', '=', $this->gocap . '.pc_pengurus.id_pc_pengurus')
-                ->select($this->siftnu . '.pengguna.*')
-                ->first();
+                    ->where($this->gocap . '.pengurus_jabatan.id_pengurus_jabatan', $jabatan)
+                    ->join($this->gocap . '.pc_pengurus', $this->gocap . '.pengurus_jabatan.id_pengurus_jabatan', '=', $this->gocap . '.pc_pengurus.id_pengurus_jabatan')
+                    ->join($this->siftnu . '.pengguna', $this->gocap . '.pc_pengurus.id_pc_pengurus', '=', $this->siftnu . '.pengguna.gocap_id_pc_pengurus')
+                    ->select($this->siftnu . '.pengguna.*')
+                    ->first();
 
             $data_pengurus[$jabatan] = $result ? $result->nama : null;
+
+        
         }
 
         foreach ($id_jabatan as $j) {
@@ -1387,9 +1390,9 @@ class PrintController extends Controller
         $direktur = $data_jab['8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3'];
         $program = $data_jab['8e2ba55e-725b-11ed-ad27-e4a8df91d8b3'];
 
-        $nama_direktur = $data_pengurus['Kepala Cabang'];
-        $nama_keuangan = $data_pengurus['Divisi Keuangan'];
-        $nama_program = $data_pengurus['Divisi Program dan Administrasi Umum'];
+        $nama_direktur = $data_pengurus['8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3'];
+        $nama_keuangan = $data_pengurus['694f38af-5374-11ed-882e-e4a8df91d8b3'];
+        $nama_program = $data_pengurus['8e2ba55e-725b-11ed-ad27-e4a8df91d8b3'];
 
         $lampiran = Internal::join('pengajuan_lampiran', 'pengajuan_lampiran.id_internal', '=', 'internal.id_internal')
     ->where('pengajuan_lampiran.id_internal', $id_internal)

@@ -24,6 +24,11 @@ function terbilang($angka)
     }
 }
 
+                $ttd_ketua = App\Http\Controllers\PrintPenyaluranController::ttd($D_pengajuan->approver_ketua);
+                // dd($ttd_ketua);
+                $ttd_keuangan = App\Http\Controllers\PrintPenyaluranController::ttd($D_pengajuan->staf_keuangan_pc);
+                $ttd_direktur = App\Http\Controllers\PrintPenyaluranController::ttd($D_pengajuan->approval_pencairan_direktur_id);
+
 // $angka = 123456; // Ganti dengan angka yang ingin diubah ke terbilang
 // echo terbilang($angka);
 
@@ -339,7 +344,7 @@ function terbilang($angka)
                 <td
                     style="width:166.2pt; border-top:0.75pt solid #FFFFFF; border-right:0.75pt solid #FFFFFF; border-bottom:0.75pt solid #FFFFFF; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; text-align: center;">
                     @if ($D_pengajuan->approval_status_pencairan_direktur == 'Disetujui')
-                        <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/1697426100.Ahmad%20Fauzi,%20S.Pd.I.jpg"
+                        <img src="https://gocapv2.nucarecilacap.id/uploads/user/{{$ttd_direktur}}"
                             width="100px">
                     @else
                     <br>
@@ -356,7 +361,7 @@ function terbilang($angka)
                 <td
                     style="width:166.2pt; border-top:0.75pt solid #FFFFFF; border-right:0.75pt solid #FFFFFF; border-bottom:0.75pt solid #FFFFFF; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; text-align: center;">
                     @if ($D_pengajuan->pencairan_status == 'Berhasil Dicairkan')
-                        <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/1697254224.Veni%20Mutia%20Sari.jpg"
+                        <img src="https://gocapv2.nucarecilacap.id/uploads/user/{{$ttd_keuangan}}"
                             width="100px">
                     @else
                     <br>
@@ -382,6 +387,7 @@ function terbilang($angka)
                                 style="font-family:'Arial Narrow';">{{ $nama_keuangan }}</span></strong></p>
                 </td>
             </tr>
+            
             <tr>
                 <td
                     style="width:166.2pt; border-top:0.75pt solid #FFFFFF; border-right:0.75pt solid #FFFFFF; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
@@ -428,8 +434,8 @@ function terbilang($angka)
                     style="width:166.2pt; border-top:0.75pt solid #FFFFFF; border-right:0.75pt solid #FFFFFF; border-bottom:0.75pt solid #FFFFFF; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; text-align: center;">
                     @if (
                         $D_pengajuan->approval_status_pencairan_direktur == 'Disetujui' &&
-                            $D_pengajuan->pencairan_status == 'Berhasil Dicairkan')
-                        <img src="https://gocapv2.nucarecilacap.id/uploads/ttd/1697426218.H.%20Wasbah%20Samudra%20Fawaid,%20S.E.jpg"
+                            $D_pengajuan->pencairan_status == 'Berhasil Dicairkan' )
+                        <img src="https://gocapv2.nucarecilacap.id/uploads/user/H.%20Wasbah%20Samudra%20Fawaid,%20S.E__1722237952.jpg"
                             width="100px">
                     @else
                     <br>
@@ -437,7 +443,7 @@ function terbilang($angka)
                     <br>
                     @endif
                     <p style="margin-bottom:0pt; text-align:center; line-height:normal;"><strong><span
-                                style="font-family:'Arial Narrow';">{{ $nama_ketua }}</span></strong></p>
+                                style="font-family:'Arial Narrow';">H. Wasbah Samudra Fawaid, S.E</span></strong></p>
                 </td>
                 <td
                     style="width:166.25pt; border-top:0.75pt solid #FFFFFF; border-left:0.75pt solid #FFFFFF; border-bottom:0.75pt solid #FFFFFF; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">

@@ -1217,7 +1217,6 @@ class DetailInternalPc extends Component
     public function acc()
     {
         $data = Internal::where('id_internal', $this->id_internal)->first();
-        $asnaf = DB::table('asnaf')->where('id_asnaf', $data->id_asnaf)->value('nama_asnaf');
         // create data
         Internal::where('id_internal', $this->id_internal)->update([
             'approval_date' => $this->approval_date,
@@ -1236,8 +1235,8 @@ class DetailInternalPc extends Component
          $url =  "https://e-tasyaruf.nucarecilacap.id/pc/detail-pengajuan-internal-pc/" . "$this->id_internal";
 
         $this->notif(
-            // Helper::getNohpPengurus('pc', $this->staf_keuangan),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $this->staf_keuangan),
+            // '089639481199',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -1320,8 +1319,8 @@ class DetailInternalPc extends Component
         $url =  "https://e-tasyaruf.nucarecilacap.id";
 
         $this->notif(
-            //  Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-            '089639481199',
+             Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //'089639481199',
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                 "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                 Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .
@@ -1370,8 +1369,8 @@ class DetailInternalPc extends Component
         $url =  "https://e-tasyaruf.nucarecilacap.id";
 
         $this->notif(
-            //  Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-            '089639481199',
+             Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //'089639481199',
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                 "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                 Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .
@@ -1674,8 +1673,8 @@ class DetailInternalPc extends Component
 
         if ($this->bentuk == 'Cash') {
             $this->notif(
-                // Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-              '089639481199',
+                Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //   '089639481199',
                "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                    "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                    Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .
@@ -1712,8 +1711,8 @@ class DetailInternalPc extends Component
            );
         } else {
             $this->notif(
-                // Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-              '089639481199',
+                Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //   '089639481199',
                "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                    "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                    Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .

@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
         //untuk ranting
         Route::get('/filter_dashboard_ranting/{c_filter_bulan}/{c_filter_tahun}/{c_filter_status}/{c_filter_id_upzis}/{c_filter_id_ranting}', [DashboardController::class, 'filter_ranting'])->name('filter_dashboard_rantings');
         //untuk pc umum
+        
         Route::get('/filter_dashboard_pc_umum/{c_filter_bulan}/{c_filter_tahun}/{c_filter_status}/{c_filter_kategori}/{c_filter_pilar}', [DashboardController::class, 'filter_pc_umum']);
         //internal pc
         Route::get('/filter_dashboard_internal_pc/{c_filter_bulan}/{c_filter_tahun}/{c_filter_status}/{c_filter_tujuan}', [DashboardController::class, 'filter_internal_pc']);
