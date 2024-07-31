@@ -45,10 +45,13 @@
                 }
             </style>
 
+            {{-- {{ dd($bank) }} --}}
+
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label style="font-weight: normal;">Bank &nbsp;</label>
                     <br>
+                    {{-- @if ($bank != '') --}}
                     @if (count($bank) > 1)
                         @php
                             $bank_details = [];
@@ -77,7 +80,10 @@
                         @else
                             <label>{{ $bank_details[0] ?? '' }}</label>
                         @endif
-                    @else
+                    @endif
+
+                    {{-- @else --}}
+                    @if ($bank == '' or count($bank) == 1)
                         @if (!empty($detail_jurnal) && !empty($detail_jurnal->bank))
                             @php
                                 $banks = \App\Models\Rekening::where('id_rekening', $detail_jurnal->bank)->first();
