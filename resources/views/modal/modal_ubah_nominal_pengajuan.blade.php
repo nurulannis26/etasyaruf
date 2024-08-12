@@ -161,25 +161,9 @@
                            {{-- end survey --}}
                            <hr>
                            <hr style="width: 100%; border: none; border-top: 1px solid #797b7d; margin: 10px 0;">
-
-                           <div class="form-group col-md-6">
-                               <label for="inputNama">JENIS TANDA TERIMA &nbsp;</label>
-                               <select wire:model="jenis_tanda_terima_edit" class="form-control">
-                                   <option value="">Pilih Tanda Terima</option>
-                                   <option value="barang">Barang</option>
-                                   <option value="dokumen">Dokumen</option>
-                                   <option value="surat">Surat</option>
-                                   <option value="lainnya">Lainnya</option>
-                               </select>
-                           </div>
                            <hr>
-
-                           <div class="form-group col-md-6">
-                               <label>KETERANGAN LAINNYA &nbsp;</label>
-                               <input @if ($this->jenis_tanda_terima_edit == 'lainnya') @else disabled @endif wire:model="lainnya_edit"
-                                   type="text" class="form-control" placeholder="Masukkan Tanda Terima Lainnya">
-                           </div>
-
+                           <hr>
+                           <hr>
 
                            {{--  no surat  --}}
                            <div class="form-group col-md-6">
@@ -189,6 +173,7 @@
                                    placeholder="Masukkan Nomor Surat">
                            </div>
                            {{-- end no surat --}}
+                           
 
 
                            <hr>
@@ -226,13 +211,38 @@
 
                            <hr>
 
-                           {{--  tgl setor lpj  --}}
-                           {{-- <div class="form-group col-md-4">
-                        <label for="inputNama">TGL SETOR LPJ&nbsp;</label>
-                        <sup class="badge badge-danger text-white mb-2" style="background-color:rgba(230,82,82)">WAJIB</sup>
-                        <input wire:model="tgl_setor" type="date" class="form-control">
-                    </div> --}}
-                           {{-- end tgl setor lpj --}}
+                           <div class="form-group col-md-12">
+                               <label for="inputNama">DOKUMEN PENGAJUAN &nbsp;</label>
+                               <select class="select2" multiple="multiple" wire:model="syarat_dokumen_edit"
+                                   data-placeholder="Pilih dokumen pengajuan" id="dok"
+                                   style="width: 100%;">
+                                   <option value="Fotokopi KTP/SIM/Paspor/KK/KITAS">Fotokopi KTP/SIM/Paspor/KK/KITAS
+                                   </option>
+                                   <option value="Surat Keterangan Tidak Mampu">Surat Keterangan Tidak Mampu</option>
+                                   <option value="Surat Keterangan Dokter">Surat Keterangan Dokter</option>
+                                   <option value="Surat Keterangan dari Lembaga Pendidikan">Surat Keterangan dari
+                                       Lembaga Pendidikan
+                                   </option>
+                                   <option value="Surat Keterangan Muallaf">Surat Keterangan Muallaf</option>
+                                   <option value="Rekomendasi Pengurus NU/Lembaga NU/Banom NU">Rekomendasi Pengurus
+                                       NU/Lembaga NU/Banom
+                                       NU</option>
+                                   <option value="NPWP Lembaga">NPWP Lembaga</option>
+                                   <option value="Akta Notaris Lembaga">Akta Notaris Lembaga</option>
+                                   <option value="Proposal Kegiatan">Proposal Kegiatan</option>
+                                   <option value="Surat Permohonan">Surat Permohonan</option>
+                                   <option value="Lainnya">Lainnya</option>
+                               </select>
+                           </div>
+                           <hr>
+
+                           @if (in_array('Lainnya', $this->syarat_dokumen_edit))
+                               <div class="form-group col-md-12">
+                                   <input wire:model="dokumen_lainnya_edit" type="text" class="form-control"
+                                       placeholder="Masukan dokumen lainnya">
+                               </div>
+                           @endif
+                           <hr>
 
                            <hr style="width: 100%; border: none; border-top: 1px solid #797b7d; margin: 10px 0;">
                            <hr>
@@ -293,8 +303,6 @@
                                        @endif
                                    </select>
                                </div>
-
-                           <hr>
 
                            <hr>
                            <div class="form-group col-md-12">
@@ -474,3 +482,36 @@
            });
        </script>
    @endpush --}}
+
+@push('script')
+    <script>
+        $(document).ready(function() {
+            bsCustomFileInput.init();
+
+            function initializeSelect2() {
+                $('#dok').select2();
+                $('#dok').on('change', function (e) {
+                    var data = $('#dok').select2("val");
+                    @this.set('syarat_dokumen_edit', data);
+                });
+            }
+
+            // Initialize Select2 when the document is ready
+            initializeSelect2();
+
+            // Re-initialize Select2 every time the modal is shown
+            $('#modal_ubah_nominal_pengajuan').on('shown.bs.modal', function () {
+                initializeSelect2();
+            });
+
+            window.livewire.on('loadContactDeviceSelect2', () => {
+                initializeSelect2();
+            });
+
+            // Trigger the Livewire event to show the modal
+            window.livewire.on('modal_ubah_nominal_pengajuan', () => {
+                $('#modal_ubah_nominal_pengajuan').modal('show');
+            });
+        });
+    </script>
+    @endpush

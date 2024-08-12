@@ -80,6 +80,7 @@ class GenerateNomorController extends Controller
                     ]);
         }
     }
+    
 
 
     public function GenerateNomor($upzis, $tahun)

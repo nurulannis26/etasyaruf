@@ -638,7 +638,7 @@
                         </div>
 
                     </div>
-                    @include('jurnal_umum.form_detail_jurnal_umum')
+                    @include('jurnal_umum.form_detail_jurnal_umum2')
                 </div>
                 <!-- /.card -->
             </div>

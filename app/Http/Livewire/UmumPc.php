@@ -89,6 +89,8 @@ class UmumPc extends Component
     public $filter_daterange2;
     public $c_filter_daterange2;
     public $nik_individu;
+    public $syarat_dokumen = [];
+    public $dokumen_lainnya;
 
     public function updatedSelectedProgram($value)
     {
@@ -103,7 +105,8 @@ class UmumPc extends Component
         $this->siftnu = config('app.database_siftnu');
         $this->gocap = config('app.database_gocap');
         $this->tgl_pengajuan = date('Y-m-d');
-
+        $this->syarat_dokumen = [];
+        
         // filter
         // filter 
         if ($this->filter_pc_umum == 'on') {
@@ -167,7 +170,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -210,7 +217,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -254,7 +265,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -362,7 +377,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -404,7 +423,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -446,7 +469,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -486,7 +513,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -528,7 +559,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -570,7 +605,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -611,7 +650,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -653,7 +696,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -695,7 +742,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -737,7 +788,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -779,7 +834,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -820,7 +879,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -861,7 +924,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -902,7 +969,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -943,7 +1014,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -984,7 +1059,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1026,7 +1105,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1068,7 +1151,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1110,7 +1197,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1148,7 +1239,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1190,7 +1285,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1231,7 +1330,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1272,7 +1375,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1313,7 +1420,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1354,7 +1465,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1395,7 +1510,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1437,7 +1556,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1479,7 +1602,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1523,7 +1650,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1566,7 +1697,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1609,7 +1744,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1650,7 +1789,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1692,7 +1835,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1735,7 +1882,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1777,7 +1928,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1821,7 +1976,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1865,7 +2024,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1904,7 +2067,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1945,7 +2112,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -1985,7 +2156,11 @@ class UmumPc extends Component
                 // ->orderBy($this->etasyaruf . '.pengajuan.created_at', 'DESC')
                 // filter status
                 ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                    return $query->where('approval_status', $this->filter_status);
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
                 })
                 // filter periode
                 ->when($filter_daterange2 != '', function ($query) use ($start_date, $end_date) {
@@ -2287,6 +2462,7 @@ class UmumPc extends Component
         //     $survey = 'Perlu';
         // }
         $gocap = config('app.database_gocap');
+        $dokumenString = implode(',', $this->syarat_dokumen);
             
         $front = DB::table($gocap . '.pengurus_jabatan as pj')
             ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
@@ -2350,6 +2526,8 @@ class UmumPc extends Component
                 'jenis_tanda_terima' => $this->jenis_tanda_terima,
                 'lainnya' => $this->lainnya,
                 'nik_individu' => $this->nik_individu,
+                'dokumen_lainnya' => $this->dokumen_lainnya,
+                'syarat_dokumen' => $dokumenString,
             ]);
             
             
@@ -2370,8 +2548,8 @@ class UmumPc extends Component
 
             // petugas penyaluran
             $this->notif(
-                // Helper::getNohpPengurus('pc', $front->id_pc_pengurus),
-                '089639481199',
+                Helper::getNohpPengurus('pc', $front->id_pc_pengurus),
+                // '089639481199',
 
                 "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 

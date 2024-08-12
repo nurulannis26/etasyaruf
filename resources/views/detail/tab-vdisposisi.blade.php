@@ -48,109 +48,110 @@
         {{-- START badge --}}
 
         @if ($dp->status_pengajuan == 'Direncanakan')
-            <sup class="text-light badge badge-warning">Pengajuan Blm Selesai Diinput FO</sup>
-        @endif
+                <sup class="text-light badge badge-warning">Pengajuan Blm Selesai Diinput FO</sup>
+            @endif
 
-        @if ($dp->status_pengajuan == 'Diajukan')
-            <sup class="text-light badge badge-success">Pengajuan Selesai Diinput FO</sup>
-        @endif
+            @if ($dp->status_pengajuan == 'Diajukan')
+                <sup class="text-light badge badge-success">Pengajuan Selesai Diinput FO</sup>
+            @endif
 
 
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            <sup class="text-light badge badge-success">Disposisi Diterima Div. Program</sup>
-        @else
-            <sup class="text-light badge badge-warning">Disposisi Blm Diterima Div. Program
-            </sup>
-        @endif
-
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            @if ($data_detail->approval_status == 'Disetujui')
-                <sup class="text-light badge badge-success">Disposisi Disetujui KC</sup>
-            @elseif($data_detail->approval_status == 'Ditolak')
-                <sup class="text-light badge badge-danger">Disposisi Ditolak KC
-                </sup>
+            @if ($data_detail->approval_status_divpro == 'Disetujui')
+                <sup class="text-light badge badge-success">Disposisi Diterima Div. Program</sup>
             @else
-                <sup class="text-light badge badge-warning">Disposisi Blm Disetujui KC
+                <sup class="text-light badge badge-warning">Disposisi Blm Diterima Div. Program
                 </sup>
             @endif
-        @endif
 
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            @if ($data_detail->status_ketua == 'Disetujui')
-                <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
-            @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
-                <sup class="text-light badge badge-warning">Ketua Blm Merespon
-                </sup>
-            @elseif ($data_detail->status_ketua == 'Ditolak')
-            <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
-            @endif
-        @endif
-
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            @if ($data_detail->respon_ketua == 'Tidak Perlu')
-                <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
-            @else
-            @endif
-        @endif
-
-
-        @if ($data_detail->approval_status == 'Disetujui')
-            @if ($data_detail->pil_survey == 'Perlu')
-                @if ($dp->status_survey == 'Direncanakan')
-                    <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
-                @elseif($dp->status_survey == 'Diajukan')
-                    <sup class="text-light badge badge-success">Survey Selesai
+            @if ($data_detail->approval_status_divpro == 'Disetujui')
+                @if ($data_detail->approval_status == 'Disetujui')
+                    <sup class="text-light badge badge-success">Disposisi Disetujui KC</sup>
+                @elseif($data_detail->approval_status == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Disposisi Ditolak KC
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Disposisi Blm Disetujui KC
                     </sup>
                 @endif
-            @elseif($data_detail->pil_survey == 'Tidak Perlu')
-                <sup class="text-light badge badge-secondary">Tanpa Survey
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
             @endif
-        @endif
+            
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->status_ketua == 'Disetujui')
+                    <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
+                @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
+                    <sup class="text-light badge badge-warning">Ketua Blm Merespon
+                    </sup>
+                @elseif ($data_detail->status_ketua == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
+                @endif
+            @endif
 
-        @if ($data_detail->pil_survey == 'Tidak Perlu')
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->respon_ketua == 'Tidak Perlu')
+                    <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
+                @else
+                    
+                @endif
+            @endif
+
+
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->pil_survey == 'Perlu')
+                    @if ($dp->status_survey == 'Direncanakan')
+                        <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
+                    @elseif($dp->status_survey == 'Diajukan')
+                        <sup class="text-light badge badge-success">Survey Selesai
+                        </sup>
+                    @endif
+                @elseif($data_detail->pil_survey == 'Tidak Perlu')
+                    <sup class="text-light badge badge-secondary">Tanpa Survey
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
+                @endif
+            @endif
+
+            @if ($data_detail->pil_survey == 'Tidak Perlu')
+                @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
+                    <sup class="text-light badge badge-success">Pencairan Disetujui KC
+                    </sup>
+                @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Pencairan Ditolak KC
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
+                    </sup>
+                @endif
+            @elseif($data_detail->pil_survey == 'Perlu' && $dp->status_survey == 'Diajukan')
+                @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
+                    <sup class="text-light badge badge-success">Pencairan Disetujui KC
+                    </sup>
+                @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Pencairan Ditolak KC
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
+                    </sup>
+                @endif
+            @endif
+
+
             @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
-                <sup class="text-light badge badge-success">Pencairan Disetujui KC
-                </sup>
-            @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
-                <sup class="text-light badge badge-danger">Pencairan Ditolak KC
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
-                </sup>
+                @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
+                    <sup class="text-light badge badge-success">Pencairan Disetujui Div. Keuangan
+                    </sup>
+                @elseif ($data_detail->pencairan_status == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Pencairan Ditolak Div. Keuangan
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Pencairan Blm Disetujui Div. Keuangan
+                    </sup>
+                @endif
             @endif
-        @elseif($data_detail->pil_survey == 'Perlu' && $dp->status_survey == 'Diajukan')
-            @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
-                <sup class="text-light badge badge-success">Pencairan Disetujui KC
-                </sup>
-            @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
-                <sup class="text-light badge badge-danger">Pencairan Ditolak KC
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
-                </sup>
-            @endif
-        @endif
+            {{-- {{ dd($data_detail) }} --}}
 
 
-        @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
-            @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
-                <sup class="text-light badge badge-success">Pencairan Disetujui Div. Keuangan
-                </sup>
-            @elseif ($data_detail->pencairan_status == 'Ditolak')
-                <sup class="text-light badge badge-danger">Pencairan Ditolak Div. Keuangan
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Pencairan Blm Disetujui Div. Keuangan
-                </sup>
-            @endif
-        @endif
-        {{-- {{ dd($data_detail) }} --}}
-
-
-        @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
             @if ($data_detail->berita_konfirmasi_pc)
                 <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
                 </sup>
@@ -167,7 +168,7 @@
                 <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
                 </sup>
             @endif
-        @endif
+         @endif
 
 
         {{-- END badge --}}
@@ -312,182 +313,176 @@
 {{-- {{ $this->none_block_tolak_program }} --}}
 
 <div class="tab-persetujuan_program-detail-umum-pc">
-
-    <div class="card card-body mt-3 mr-2 ml-2" style="display: {{ $none_block_acc_program }};">
-        <div class="d-flex justify-content-between align-items-center">
-            <b class="text-success">RESPON ACC DIV. PROGRAM</b>
-            <a wire:click="close" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </a>
-        </div>
-
-        {{-- form --}}
-        <form wire:submit.prevent="acc_program">
-            <div class="form-row mt-4">
-
-                {{-- Direktur --}}
-                <div class="form-group col-md-7">
-                    <input type="input" class="form-control"
-                        value="{{ Auth::user()->PcPengurus->JabatanPengurus->jabatan }} - {{ Auth::user()->nama }}"
-                        readonly>
-                </div>
-                {{-- end direktur --}}
-
-
-                {{-- tgl disetujui --}}
-                <div class="form-group col-md-5">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"
-                                style="width: 200px; display: flex; justify-content: center; align-items: center;">Tgl
-                                Diterima Div. Program</span>
-                        </div>
-                        <input wire:model="approval_date_divpro" type="date" class="form-control">
-                    </div>
-                </div>
-                {{-- end tgl disetujui --}}
-
-                <div class="form-group col-md-7">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"
-                                style="width: 200px; display: flex; justify-content: center; align-items: center;">Keterangan</span>
-                        </div>
-                        <input wire:model="keterangan_acc_divpro" type="input" class="form-control "
-                            id="keterangan_acc" placeholder="Masukan Keterangan ACC">
-                    </div>
-                </div>
-
-                {{-- tgl disetujui --}}
-                <div class="form-group col-md-5">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"
-                                style="width: 200px; display: flex; justify-content: center; align-items: center;">Tgl
-                                Diserahkan Ke KC</span>
-                        </div>
-                        <input wire:model="tgl_diserahkan_direktur" type="date" class="form-control">
-                    </div>
-                </div>
-                {{-- end tgl disetujui --}}
-
-
-                {{-- info --}}
-                <div class="form-group col-md-12">
-                    <div class="card card-body " style="background-color:#e0e0e0;">
-                        <b>INFORMASI!</b>
-                        <span>
-                            Dengan klik tombol ACC, Div. Program menerima disposisi penyaluran & menyerahkannya ke
-                            Kepala Cabang
-                        </span>
-                    </div>
-                </div>
-                {{-- end info --}}
-
-                <div class="form-group col-md-9">
-                </div>
-
-                {{-- tombol acc --}}
-                <div class="form-group col-md-3">
-                    @if ($keterangan_acc_divpro == '')
-                        <button class="btn btn-success btn-block" disabled wire:loading.attr="disabled"><i
-                                class="fas fa-check-circle"></i>
-                            ACC</button>
-                    @else
-                        <button type="submit" name="submit" class="btn btn-success btn-block"
-                            wire:loading.attr="disabled"><i class="fas fa-check-circle"></i>
-                            ACC</button>
-                    @endif
-                </div>
-                {{-- acc --}}
-
+    
+        <div class="card card-body mt-3 mr-2 ml-2" style="display: {{ $none_block_acc_program }};" >
+            <div class="d-flex justify-content-between align-items-center">
+                <b class="text-success">RESPON ACC DIV. PROGRAM</b>
+                <a wire:click="close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
             </div>
-        </form>
 
-    </div>
-    {{-- end card acc --}}
+            {{-- form --}}
+            <form wire:submit.prevent="acc_program">
+                <div class="form-row mt-4">
 
-    {{-- card tolak --}}
-    <div class="card card-body mt-3 mr-2 ml-2" style="display: {{ $this->none_block_tolak_program }};">
-        <div class="d-flex justify-content-between align-items-center">
-            <b class="text-danger">RESPON TOLAK PENGAJUAN DIV. PROGRAM</b>
-            <a wire:click="close" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </a>
+                    {{-- Direktur --}}
+                    <div class="form-group col-md-7">
+                        <input type="input" class="form-control"
+                            value="{{ Auth::user()->PcPengurus->JabatanPengurus->jabatan }} - {{ Auth::user()->nama }}"
+                            readonly>
+                    </div>
+                    {{-- end direktur --}}
+
+
+                    {{-- tgl disetujui --}}
+                    <div class="form-group col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="width: 200px; display: flex; justify-content: center; align-items: center;">Tgl Diterima Div. Program</span>
+                            </div>
+                            <input wire:model="approval_date_divpro" type="date" class="form-control" >
+                        </div>
+                    </div>
+                    {{-- end tgl disetujui --}}
+
+                    <div class="form-group col-md-7">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="width: 200px; display: flex; justify-content: center; align-items: center;">Keterangan</span>
+                            </div>
+                            <input wire:model="keterangan_acc_divpro" type="input" class="form-control "
+                                id="keterangan_acc" placeholder="Masukan Keterangan ACC">
+                        </div>
+                    </div>
+
+                      {{-- tgl disetujui --}}
+                      <div class="form-group col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="width: 200px; display: flex; justify-content: center; align-items: center;">Tgl Diserahkan Ke KC</span>
+                            </div>
+                            <input wire:model="tgl_diserahkan_direktur" type="date" class="form-control" >
+                        </div>
+                    </div>
+                    {{-- end tgl disetujui --}}
+
+
+                    {{-- info --}}
+                    <div class="form-group col-md-12">
+                        <div class="card card-body " style="background-color:#e0e0e0;">
+                            <b>INFORMASI!</b>
+                            <span>
+                                Dengan klik tombol ACC, Div. Program menerima disposisi penyaluran & menyerahkannya ke Kepala Cabang
+                            </span>
+                        </div>
+                    </div>
+                    {{-- end info --}}
+
+                    <div class="form-group col-md-9">
+                    </div>
+
+                    {{-- tombol acc --}}
+                    <div class="form-group col-md-3">
+                        @if ( $keterangan_acc_divpro == '')
+                            <button class="btn btn-success btn-block" disabled wire:loading.attr="disabled"><i
+                                    class="fas fa-check-circle"></i>
+                                ACC</button>
+                        @else
+                            <button type="submit" name="submit" class="btn btn-success btn-block"
+                                wire:loading.attr="disabled"><i class="fas fa-check-circle"></i>
+                                ACC</button>
+                        @endif
+                    </div>
+                    {{-- acc --}}
+
+                </div>
+            </form>
+
         </div>
+        {{-- end card acc --}}
 
-        <form wire:submit.prevent="tolak_program">
-
-            <div class="form-row mt-4">
-
-                {{-- Direktur --}}
-                <div class="form-group col-md-7">
-                    <input type="input" class="form-control"
-                        value="{{ Auth::user()->PcPengurus->JabatanPengurus->jabatan }} - {{ Auth::user()->nama }}"
-                        readonly>
-                </div>
-                {{-- end rekening --}}
-
-                {{-- tgl penolakan --}}
-                <div class="form-group col-md-5">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Tgl Penolakan</span>
-                        </div>
-                        <input wire:model="denial_date_divpro" type="date" class="form-control">
-                    </div>
-                </div>
-                {{-- end tgl penolakan --}}
-
-
-                {{-- denial note --}}
-                <div class="form-group col-md-12">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Alasan</span>
-                        </div>
-                        <input wire:model="denial_note_divpro" type="input" class="form-control"
-                            placeholder="Masukan Alasan Penolakan">
-                    </div>
-                </div>
-                {{-- end denial note --}}
-
-
-                {{-- info --}}
-                <div class="form-group col-md-12">
-                    <div class="card card-body " style="background-color:#e0e0e0;">
-                        <b>INFORMASI!</b>
-                        <span>
-                            Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan dana
-                            oleh
-                            divisi keuangan
-                        </span>
-                    </div>
-                </div>
-                {{-- end info --}}
-
-                <div class="form-group col-md-9">
-                </div>
-
-                {{-- tombol tolak --}}
-                <div class="form-group col-md-3">
-                    @if ($denial_note_divpro == '')
-                        <button class="btn btn-danger btn-block" disabled wire:loading.attr="disabled"><i
-                                class="fas fa-minus-circle"></i>
-                            Tolak</button>
-                    @else
-                        <button type="submit" name="submit" class="btn btn-danger btn-block"
-                            wire:loading.attr="disabled"><i class="fas fa-minus-circle"></i>
-                            Tolak</button>
-                    @endif
-                </div>
-                {{-- tolak --}}
-
-
+        {{-- card tolak --}}
+        <div class="card card-body mt-3 mr-2 ml-2" style="display: {{ $this->none_block_tolak_program }};">
+            <div class="d-flex justify-content-between align-items-center">
+                <b class="text-danger">RESPON TOLAK PENGAJUAN DIV. PROGRAM</b>
+                <a wire:click="close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
             </div>
-        </form>
-    </div>
-    {{-- end card tolak --}}
+
+            <form wire:submit.prevent="tolak_program">
+
+                <div class="form-row mt-4">
+
+                    {{-- Direktur --}}
+                    <div class="form-group col-md-7">
+                        <input type="input" class="form-control"
+                            value="{{ Auth::user()->PcPengurus->JabatanPengurus->jabatan }} - {{ Auth::user()->nama }}"
+                            readonly>
+                    </div>
+                    {{-- end rekening --}}
+
+                    {{-- tgl penolakan --}}
+                    <div class="form-group col-md-5">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Tgl Penolakan</span>
+                            </div>
+                            <input wire:model="denial_date_divpro" type="date" class="form-control">
+                        </div>
+                    </div>
+                    {{-- end tgl penolakan --}}
+
+
+                    {{-- denial note --}}
+                    <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Alasan</span>
+                            </div>
+                            <input wire:model="denial_note_divpro" type="input" class="form-control"
+                                placeholder="Masukan Alasan Penolakan">
+                        </div>
+                    </div>
+                    {{-- end denial note --}}
+
+
+                    {{-- info --}}
+                    <div class="form-group col-md-12">
+                        <div class="card card-body " style="background-color:#e0e0e0;">
+                            <b>INFORMASI!</b>
+                            <span>
+                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan dana
+                                oleh
+                                divisi keuangan
+                            </span>
+                        </div>
+                    </div>
+                    {{-- end info --}}
+
+                    <div class="form-group col-md-9">
+                    </div>
+
+                    {{-- tombol tolak --}}
+                    <div class="form-group col-md-3">
+                        @if ($denial_note_divpro == '')
+                            <button class="btn btn-danger btn-block" disabled wire:loading.attr="disabled"><i
+                                    class="fas fa-minus-circle"></i>
+                                Tolak</button>
+                        @else
+                            <button type="submit" name="submit" class="btn btn-danger btn-block"
+                                wire:loading.attr="disabled"><i class="fas fa-minus-circle"></i>
+                                Tolak</button>
+                        @endif
+                    </div>
+                    {{-- tolak --}}
+
+
+                </div>
+            </form>
+        </div>
+        {{-- end card tolak --}}
     {{-- @endif --}}
 
 
@@ -548,7 +543,7 @@
             <form wire:submit.prevent="acc">
                 <div class="form-row mt-4">
 
-
+                    
 
 
                     {{-- tgl disetujui --}}
@@ -563,7 +558,7 @@
                         </div>
                     </div>
                     {{-- end tgl disetujui --}}
-
+                    
                     {{-- survey --}}
                     <div class="form-group col-md-6">
                         <div class="input-group">
@@ -580,7 +575,7 @@
                         </div>
                     </div>
                     {{-- end survey --}}
-
+                    
                     <div class="form-group col-md-6">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -610,8 +605,8 @@
 
                         </div>
                     </div>
-
-
+                    
+                    
 
 
                     {{-- info --}}
@@ -619,8 +614,7 @@
                         <div class="card card-body " style="background-color:#e0e0e0;">
                             <b>INFORMASI!</b>
                             <span>
-                                Dengan klik tombol ACC, Kepala Cabang memberikan persetujuan untuk disposisi pengajuan
-                                umum.
+                                Dengan klik tombol ACC, Kepala Cabang memberikan persetujuan untuk disposisi pengajuan umum.
                                 @if ($this->pil_survey == '')
                                     Survey Blm Ditentukan.
                                 @else
@@ -629,7 +623,7 @@
                                 @if ($this->respon_ketua == '')
                                     Respon Ketua Blm Ditentukan.
                                 @else
-                                    {{ $this->respon_ketua }} Respon Ketua.
+                                    {{$this->respon_ketua}} Respon Ketua.
                                 @endif
                             </span>
                         </div>
@@ -713,8 +707,7 @@
                         <div class="card card-body " style="background-color:#e0e0e0;">
                             <b>INFORMASI!</b>
                             <span>
-                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan
-                                dana
+                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan dana
                                 oleh
                                 divisi keuangan
                             </span>
@@ -765,7 +758,8 @@
 
 
                 @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3' and
-                        ($data_detail->approval_status_divpro == 'Belum Direspon' or $data_detail->approval_status == 'Belum Direspon'))
+                        ($data_detail->approval_status_divpro == 'Belum Direspon' or
+                            $data_detail->approval_status == 'Belum Direspon'))
                     {{-- <div class="ml-2" style="padding-left: 200px;"> --}}
                     <div class="btn-group ">
 
@@ -817,17 +811,17 @@
 
 
                     @if ($data_detail->approval_date_divpro && $data_detail->status_divpro == 'Diterima')
-                        <tr>
-                            <td class="text-bold" style="width: 30%;vertical-align: middle;">
-                                Direspon Oleh
-                            </td>
-                            <td style="vertical-align: middle;">
-                                {{ $this->nama_pengurus_pc($data_detail->approver_divpro) }}
-                                <br>
-                                <span
-                                    style="font-size:11pt;">({{ $this->jabatan_pengurus_pc($data_detail->approver_divpro) }})</span>
+                    <tr>
+                        <td class="text-bold" style="width: 30%;vertical-align: middle;">
+                            Direspon Oleh
+                        </td>
+                        <td style="vertical-align: middle;">
+                            {{ $this->nama_pengurus_pc($data_detail->approver_divpro) }}
+                            <br>
+                            <span
+                                style="font-size:11pt;">({{ $this->jabatan_pengurus_pc($data_detail->approver_divpro) }})</span>
 
-                            </td>
+                        </td>
                         </tr>
                         <tr>
                             <td class="text-bold " style="width: 30%">
@@ -866,14 +860,14 @@
                             </td>
                         </tr>
                     @else
-                        <tr>
-                            <td class="text-bold" style="width: 30%;vertical-align: middle;">
-                                Direspon Oleh
-                            </td>
-                            <td style="vertical-align: middle;">
-                                -
+                    <tr>
+                        <td class="text-bold" style="width: 30%;vertical-align: middle;">
+                            Direspon Oleh
+                        </td>
+                        <td style="vertical-align: middle;">
+                            -
 
-                            </td>
+                        </td>
                         </tr>
                         <tr>
                             <td class="text-bold " style="width: 30%">
@@ -893,7 +887,7 @@
                         <tr>
                             <td class="text-bold " style="width: 30%">
                                 Status</td>
-                            <td>
+                                <td>
                                 @if ($data_detail->status_divpro == 'Diterima')
                                     <span class="text-light badge badge-success">Diterima</span>
                                 @elseif($data_detail->status_divpro == 'Ditolak')
@@ -1096,7 +1090,7 @@
                         <td>
                             <b style="font-size: 12pt;">Status</b>
                         </td>
-                        <td>
+                        <td> 
                             @if ($data_detail->approval_status == 'Disetujui')
                                 <span class="text-light badge badge-success">Disetujui</span>
                             @elseif($data_detail->approval_status == 'Ditolak')
@@ -1115,7 +1109,7 @@
                         </td>
                         <td> {{ $data_detail->pil_survey ?? '-' }}</td>
                     </tr>
-
+                    
                     <tr>
                         <td>
                             <b style="font-size: 12pt;">Respon Ketua</b>
@@ -1443,8 +1437,8 @@
 
         </div>
         {{-- end card acc --}}
-
-        <div class="card card-body mt-3 mr-2 ml-2" style="display: {{ $none_block_tolak_ketua }};">
+        
+         <div class="card card-body mt-3 mr-2 ml-2" style="display: {{ $none_block_tolak_ketua }};">
             <div class="d-flex justify-content-between align-items-center">
                 <b class="text-danger">RESPON TOLAK PENGAJUAN KETUA</b>
                 <a wire:click="close" type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1544,8 +1538,7 @@
 
 
                 @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'c0e0faee-3590-11ed-9a47-e4a8df91d887' and
-                        $data_detail->approval_status_divpro == 'Disetujui' and
-                        $data_detail->approval_status == 'Disetujui' and $data_detail->approval_status_pencairan_direktur == null)
+                        $data_detail->approval_status_divpro == 'Disetujui' and $data_detail->approval_status == 'Disetujui' and $data_detail->approval_status_pencairan_direktur == null)
                     {{-- <div class="ml-2" style="padding-left: 200px;"> --}}
                     <div class="btn-group ">
 
@@ -1564,9 +1557,7 @@
                             <a wire:click="tombol_acc_ketua" onMouseOver="this.style.color='green'"
                                 onMouseOut="this.style.color='black'" class="dropdown-item" data-toggle="modal"
                                 data-target="#modal_acc" type="button"><i class="fas fa-user-check"></i>
-                                @if (
-                                    $data_detail->approval_status == 'Disetujui' and
-                                        $data_detail->approval_status_pencairan_direktur == 'Belum Direspon')
+                                @if ($data_detail->approval_status == 'Disetujui' and $data_detail->approval_status_pencairan_direktur == 'Belum Direspon')
                                     ACC Ulang
                                 @else
                                     ACC
@@ -1589,6 +1580,8 @@
         <div class="col-12 mt-2">
             <table class="table  table-bordered">
                 <thead>
+
+
 
                     @if ($data_detail->approval_date_ketua && $data_detail->status_ketua == 'Disetujui')
                         <tr>
@@ -1694,6 +1687,9 @@
                             </td>
                         </tr>
                     @endif
+
+
+
                 </thead>
             </table>
         </div>

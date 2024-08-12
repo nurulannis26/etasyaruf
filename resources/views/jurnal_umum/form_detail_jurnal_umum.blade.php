@@ -44,15 +44,23 @@
                     border-radius: 0.25rem;
                 }
             </style>
-
-            {{-- {{ dd($bank) }} --}}
+            
+           
 
             <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-4">
                     <label style="font-weight: normal;">Bank &nbsp;</label>
                     <br>
-                    {{-- @if ($bank != '') --}}
-                    @if (count($bank) > 1)
+                    @if (is_string($bank) && $bank == '')
+                        <label>Pembayaran Tunai</label>
+                    @elseif (count($bank) == 1)
+                        @if (!empty($detail_jurnal) && !empty($detail_jurnal->bank))
+                            @php
+                                $banks = \App\Models\Rekening::where('id_rekening', $detail_jurnal->bank)->first();
+                            @endphp
+                            <label>{{ $banks->no_rekening ?? '' }} - {{ $banks->nama_rekening ?? '' }}</label>
+                        @endif
+                    @elseif (count($bank) > 1)
                         @php
                             $bank_details = [];
                         @endphp
@@ -81,18 +89,8 @@
                             <label>{{ $bank_details[0] ?? '' }}</label>
                         @endif
                     @endif
-
-                    {{-- @else --}}
-                    @if ($bank == '' or count($bank) == 1)
-                        @if (!empty($detail_jurnal) && !empty($detail_jurnal->bank))
-                            @php
-                                $banks = \App\Models\Rekening::where('id_rekening', $detail_jurnal->bank)->first();
-                            @endphp
-                            <label>{{ $banks->no_rekening ?? '' }} - {{ $banks->nama_rekening ?? '' }}</label>
-                        @else
-                            <label>Pembayaran Tunai</label>
-                        @endif
-                    @endif
+                    
+                    
                 </div>
             </div>
 

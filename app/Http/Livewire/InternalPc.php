@@ -123,8 +123,12 @@ class InternalPc extends Component
 
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -186,8 +190,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -218,8 +226,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -251,8 +263,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -285,8 +301,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -322,8 +342,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -354,8 +378,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
             })
@@ -388,8 +416,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter berdasarkan peran pengguna
             ->when(!in_array(Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan, [
                 '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3',
@@ -419,8 +451,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter berdasarkan peran pengguna
             ->when(!in_array(Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan, [
                 '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3',
@@ -447,8 +483,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter tujuan
             ->when($this->filter_tujuan != 'Semua' && $this->filter_tujuan != '', function ($query) {
                 return $query->where('tujuan', $this->filter_tujuan);
@@ -482,8 +522,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter berdasarkan peran pengguna
             ->when(!in_array(Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan, [
                 '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3',
@@ -513,8 +557,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter berdasarkan peran pengguna
             ->when(!in_array(Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan, [
                 '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3',
@@ -544,8 +592,12 @@ class InternalPc extends Component
             })
             // filter status
             ->when($this->filter_status != 'Semua' && $this->filter_status != '', function ($query) {
-                return $query->where('approval_status', $this->filter_status);
-            })
+                    if ($this->filter_status == 'Berhasil Dicairkan') {
+                        return $query->where('pencairan_status', $this->filter_status);
+                    } else {
+                        return $query->where('approval_status', $this->filter_status);
+                    }
+                })
             // filter berdasarkan peran pengguna
             ->when(!in_array(Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan, [
                 '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3',
@@ -711,8 +763,8 @@ class InternalPc extends Component
         // $url =  "https://e-tasyaruf.nucarecilacap.id";
 
         $this->notif(
-            //  Helper::getNohpByIdJabatan('pc', '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3'),
-            '089639481199',
+             Helper::getNohpByIdJabatan('pc', '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3'),
+            // '089639481199',
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                 "Yth. " . "*" . Helper::getNamaPengurusByIdJabatan('pc', Auth::user()->PcPengurus->Pc->id_pc, '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3') .  "*" . "\n" .
                 Helper::getJabatanPengurusByIdJabatan('pc', '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')  . "\n" . "\n" .

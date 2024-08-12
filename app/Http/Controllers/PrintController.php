@@ -1280,7 +1280,7 @@ class PrintController extends Controller
 
         $nama = Pengguna::join($gocap . '.pc_pengurus', 'pc_pengurus.id_pc_pengurus', '=', 'pengguna.gocap_id_pc_pengurus')
             ->join($gocap . '.pengurus_jabatan', 'pengurus_jabatan.id_pengurus_jabatan', '=', 'pc_pengurus.id_pengurus_jabatan')
-            ->where('id_pengurus_jabatan', '20f2ff4d-1596-48ab-b60d-8a4b75a9784d')->first()->nama;
+            ->where('pc_pengurus.id_pengurus_jabatan', '20f2ff4d-1596-48ab-b60d-8a4b75a9784d')->first()->nama;
         // dd($s);
 
         $nama_surveyor = $nama;
@@ -1424,7 +1424,7 @@ class PrintController extends Controller
     public function print_penggunaan_dana($id_internal)
     {
         $internal = Internal::where('id_internal', $id_internal)->first();
-        $data = lpjInternal::where('id_internal', $id_internal)->orderBy('created_at', 'DESC')->get();
+        $data = lpjInternal::where('id_internal', $id_internal)->orderBy('tgl_penggunaan_dana', 'DESC')->get();
         // dd($internal);
         $nominal_digunakan = $data->sum('nominal');
         $sisa_dana = $internal->nominal_pencairan - $data->sum('nominal');
@@ -1446,7 +1446,7 @@ class PrintController extends Controller
     ->select('pengajuan.*', 'pengajuan_detail.*')
     ->first();
     // dd($pengajuan);
-        $data = lpjUmum::where('id_pengajuan_detail', $id_pengajuan_detail)->orderBy('created_at', 'DESC')->get();
+        $data = lpjUmum::where('id_pengajuan_detail', $id_pengajuan_detail)->orderBy('tgl_penggunaan_dana', 'DESC')->get();
         // dd($internal);
         $nominal_digunakan = $data->sum('nominal');
         if ($pengajuan->nominal_pencairan == null || $pengajuan->nominal_pencairan == "")

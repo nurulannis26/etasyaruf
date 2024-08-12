@@ -77,110 +77,111 @@
 
         {{-- START badge --}}
 
-        @if ($dp->status_pengajuan == 'Direncanakan')
-            <sup class="text-light badge badge-warning">Pengajuan Blm Selesai Diinput FO</sup>
-        @endif
+       @if ($dp->status_pengajuan == 'Direncanakan')
+                <sup class="text-light badge badge-warning">Pengajuan Blm Selesai Diinput FO</sup>
+            @endif
 
-        @if ($dp->status_pengajuan == 'Diajukan')
-            <sup class="text-light badge badge-success">Pengajuan Selesai Diinput FO</sup>
-        @endif
+            @if ($dp->status_pengajuan == 'Diajukan')
+                <sup class="text-light badge badge-success">Pengajuan Selesai Diinput FO</sup>
+            @endif
 
 
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            <sup class="text-light badge badge-success">Disposisi Diterima Div. Program</sup>
-        @else
-            <sup class="text-light badge badge-warning">Disposisi Blm Diterima Div. Program
-            </sup>
-        @endif
-
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            @if ($data_detail->approval_status == 'Disetujui')
-                <sup class="text-light badge badge-success">Disposisi Disetujui KC</sup>
-            @elseif($data_detail->approval_status == 'Ditolak')
-                <sup class="text-light badge badge-danger">Disposisi Ditolak KC
-                </sup>
+            @if ($data_detail->approval_status_divpro == 'Disetujui')
+                <sup class="text-light badge badge-success">Disposisi Diterima Div. Program</sup>
             @else
-                <sup class="text-light badge badge-warning">Disposisi Blm Disetujui KC
+                <sup class="text-light badge badge-warning">Disposisi Blm Diterima Div. Program
                 </sup>
             @endif
-        @endif
 
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            @if ($data_detail->status_ketua == 'Disetujui')
-                <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
-            @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
-                <sup class="text-light badge badge-warning">Ketua Blm Merespon
-                </sup>
-            @elseif ($data_detail->status_ketua == 'Ditolak')
-                <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
-            @endif
-        @endif
-
-        @if ($data_detail->approval_status_divpro == 'Disetujui')
-            @if ($data_detail->respon_ketua == 'Tidak Perlu')
-                <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
-            @else
-            @endif
-        @endif
-
-
-        @if ($data_detail->approval_status == 'Disetujui')
-            @if ($data_detail->pil_survey == 'Perlu')
-                @if ($dp->status_survey == 'Direncanakan')
-                    <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
-                @elseif($dp->status_survey == 'Diajukan')
-                    <sup class="text-light badge badge-success">Survey Selesai
+            @if ($data_detail->approval_status_divpro == 'Disetujui')
+                @if ($data_detail->approval_status == 'Disetujui')
+                    <sup class="text-light badge badge-success">Disposisi Disetujui KC</sup>
+                @elseif($data_detail->approval_status == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Disposisi Ditolak KC
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Disposisi Blm Disetujui KC
                     </sup>
                 @endif
-            @elseif($data_detail->pil_survey == 'Tidak Perlu')
-                <sup class="text-light badge badge-secondary">Tanpa Survey
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
             @endif
-        @endif
+            
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->status_ketua == 'Disetujui')
+                    <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
+                @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
+                    <sup class="text-light badge badge-warning">Ketua Blm Merespon
+                    </sup>
+                @elseif ($data_detail->status_ketua == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
+                @endif
+            @endif
 
-        @if ($data_detail->pil_survey == 'Tidak Perlu')
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->respon_ketua == 'Tidak Perlu')
+                    <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
+                @else
+                    
+                @endif
+            @endif
+
+
+            @if ($data_detail->approval_status == 'Disetujui')
+                @if ($data_detail->pil_survey == 'Perlu')
+                    @if ($dp->status_survey == 'Direncanakan')
+                        <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
+                    @elseif($dp->status_survey == 'Diajukan')
+                        <sup class="text-light badge badge-success">Survey Selesai
+                        </sup>
+                    @endif
+                @elseif($data_detail->pil_survey == 'Tidak Perlu')
+                    <sup class="text-light badge badge-secondary">Tanpa Survey
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Survey Blm Selesai</sup>
+                @endif
+            @endif
+
+            @if ($data_detail->pil_survey == 'Tidak Perlu')
+                @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
+                    <sup class="text-light badge badge-success">Pencairan Disetujui KC
+                    </sup>
+                @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Pencairan Ditolak KC
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
+                    </sup>
+                @endif
+            @elseif($data_detail->pil_survey == 'Perlu' && $dp->status_survey == 'Diajukan')
+                @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
+                    <sup class="text-light badge badge-success">Pencairan Disetujui KC
+                    </sup>
+                @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Pencairan Ditolak KC
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
+                    </sup>
+                @endif
+            @endif
+
+
             @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
-                <sup class="text-light badge badge-success">Pencairan Disetujui KC
-                </sup>
-            @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
-                <sup class="text-light badge badge-danger">Pencairan Ditolak KC
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
-                </sup>
+                @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
+                    <sup class="text-light badge badge-success">Pencairan Disetujui Div. Keuangan
+                    </sup>
+                @elseif ($data_detail->pencairan_status == 'Ditolak')
+                    <sup class="text-light badge badge-danger">Pencairan Ditolak Div. Keuangan
+                    </sup>
+                @else
+                    <sup class="text-light badge badge-warning">Pencairan Blm Disetujui Div. Keuangan
+                    </sup>
+                @endif
             @endif
-        @elseif($data_detail->pil_survey == 'Perlu' && $dp->status_survey == 'Diajukan')
-            @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
-                <sup class="text-light badge badge-success">Pencairan Disetujui KC
-                </sup>
-            @elseif ($data_detail->approval_status_pencairan_direktur == 'Ditolak')
-                <sup class="text-light badge badge-danger">Pencairan Ditolak KC
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Pencairan Blm Disetujui KC
-                </sup>
-            @endif
-        @endif
+            {{-- {{ dd($data_detail) }} --}}
 
 
-        @if ($data_detail->approval_status_pencairan_direktur == 'Disetujui')
-            @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
-                <sup class="text-light badge badge-success">Pencairan Disetujui Div. Keuangan
-                </sup>
-            @elseif ($data_detail->pencairan_status == 'Ditolak')
-                <sup class="text-light badge badge-danger">Pencairan Ditolak Div. Keuangan
-                </sup>
-            @else
-                <sup class="text-light badge badge-warning">Pencairan Blm Disetujui Div. Keuangan
-                </sup>
-            @endif
-        @endif
-        {{-- {{ dd($data_detail) }} --}}
-
-
-        @if ($data_detail->approval_status == 'Disetujui')
+        @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
             @if ($data_detail->berita_konfirmasi_pc)
                 <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
                 </sup>
@@ -197,7 +198,7 @@
                 <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
                 </sup>
             @endif
-        @endif
+         @endif
 
 
         {{-- END badge --}}
@@ -400,20 +401,18 @@
                                 <b style="font-size: 12pt;"> {{ $data_detail->nama_entitas }}</b><br>
                                 <span style="font-size:11pt;">No Perijinan Entitas
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-                                    {{ $data_detail->no_perijinan_entitas ?? '-' }}</span><br>
+                                    {{ $data_detail->no_perijinan_entitas ?? '-'}}</span><br>
                                 <span style="font-size:11pt;">Nama PJ Permohonan
                                     &nbsp;&nbsp;:
-                                    {{ $data_detail->nama_pj_permohonan_entitas ?? '-' }}</span><br>
+                                    {{ $data_detail->nama_pj_permohonan_entitas ?? '-'}}</span><br>
                                 <span style="font-size:11pt;">Jabatan
                                     &nbsp;:
-                                    {{ $data_detail->jabatan_entitas ?? '-' }}</span><br>
-                                <span style="font-size:11pt;">NIK
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
-                                    {{ $data_detail->nik_entitas ?? '-' }}</span><br>
+                                    {{ $data_detail->jabatan_entitas ?? '-'}}</span><br>
+                                <span style="font-size:11pt;">NIK &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                                    {{ $data_detail->nik_entitas ?? '-'}}</span><br>
                                 <span style="font-size:11pt;">No HP &nbsp;&nbsp;&nbsp;&nbsp;:
                                     {{ $data_detail->no_hp_entitas ?? '-' }}</span><br>
-                                <span style="font-size:11pt;">Alamat&nbsp;&nbsp; :
-                                    {{ $data_detail->alamat_entitas ?? '-' }}</span>
+                                <span style="font-size:11pt;">Alamat&nbsp;&nbsp; : {{ $data_detail->alamat_entitas ?? '-'}}</span>
                             </td>
                         @elseif($dp->opsi_pemohon == 'Individu')
                             <td style="vertical-align: middle;">
@@ -421,10 +420,8 @@
                                 <b style="font-size: 12pt;"> {{ $data_detail->nama_pemohon }}</b> <br>
                                 <span style="font-size:11pt;">No HP &nbsp;&nbsp;&nbsp;:
                                     {{ $data_detail->nohp_pemohon }}</span><br>
-                                <span style="font-size:11pt;">Alamat&nbsp; :
-                                    {{ $data_detail->alamat_pemohon }}</span><br>
-                                <span style="font-size:11pt;">NIK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
-                                    {{ $data_detail->nik_individu ?? '-' }}</span>
+                                <span style="font-size:11pt;">Alamat&nbsp; : {{ $data_detail->alamat_pemohon }}</span><br>
+                                <span style="font-size:11pt;">NIK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : {{ $data_detail->nik_individu ?? '-' }}</span>
                             </td>
                         @else
                             <td style="vertical-align: middle;">
@@ -442,6 +439,8 @@
                     {{-- pemohont --}}
 
                     {{-- {{ dd($data_detail) }} --}}
+                    
+                    @if ($data_detail->jenis_tanda_terima)
 
                     <tr>
                         <td class="text-bold " style="width: 30%">
@@ -452,6 +451,29 @@
                             @endif
                         </td>
                     </tr>
+                    
+                    @elseif ($data_detail->syarat_dokumen)
+                    
+                    <tr>
+                        <td class="text-bold " style="width: 30%">
+                            Dokumen Pengajuan</td>
+                        <td style="text-align: left;">
+                            @php $number = 1; @endphp
+                            @foreach ($dokumenPengajuan as $item)
+                                @if ($item === 'Lainnya')
+                                    <div>
+                                        {{ $number }}. {{ $item }} : {{ $data_detail->dokumen_lainnya }}
+                                    </div>
+                                @else
+                                    <div>
+                                        {{ $number }}. {{ $item }}
+                                    </div>
+                                @endif
+                                @php $number++; @endphp
+                            @endforeach
+                        </td>
+                    </tr>
+                    @endif
 
                     {{-- {{ dd($data_detail->tgl_surat) }} --}}
 
@@ -551,7 +573,7 @@
         </div>
 
     </div>
-
+    
     @php
         $arsip = DB::table($this->earsip . '.arsip_digital')
             ->where('nomor_surat', $dp->nomor_surat)
@@ -709,7 +731,7 @@
                     {{-- end program & pilar --}}
 
 
-
+                    
 
                     <!--<tr>-->
                     <!--    <td class="text-bold" style="width: 35%;vertical-align: middle;">-->
@@ -936,17 +958,15 @@
         </div>
 
         @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '300ff4f3-725c-11ed-ad27-e4a8df91d8b3' ||
-                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' ||
-                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
+                Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == 'e7fc67fe-725b-11ed-ad27-e4a8df91d8b3' || Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8e2ba55e-725b-11ed-ad27-e4a8df91d8b3')
             <a class="btn btn-outline-success btn-sm tombol-hapus ml-auto mr-2" data-toggle="modal"
-                wire:click="modal_hapus_penerima_manfaat_pc('{{ $id_pengajuan_detail }}')"
-                data-target="#modal_hapus_penerima_manfaat_pc" type="button"><i class="fas fa-trash"></i> Hapus
-                Semua
-            </a>
+            wire:click="modal_hapus_penerima_manfaat_pc('{{ $id_pengajuan_detail }}')" data-target="#modal_hapus_penerima_manfaat_pc"
+            type="button"><i class="fas fa-trash"></i> Hapus Semua
+        </a>
             <a href="{{ route('import_penerima_manfaat_pc', ['id_pengajuan_detail' => $data_detail->id_pengajuan_detail]) }}"
-                target="_blank" class="btn btn-sm btn-outline-success mr-2">
-                <i class="fas fa-file-excel"></i> Import
-            </a>
+            target="_blank" class="btn btn-sm btn-outline-success mr-2">
+            <i class="fas fa-file-excel"></i> Import
+        </a>
             <a href="/pc/tampil_penerima_manfaat/{{ $dp->id_pengajuan }}" target="_blank"
                 class="btn btn-outline-success btn-sm tombol-cetak mr-2" type="button"><i
                     class="fa fa-file-pdf"></i>

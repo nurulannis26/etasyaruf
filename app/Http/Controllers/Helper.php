@@ -56,7 +56,7 @@ class Helper extends Controller
 
     public static function getNamaPengurus($role, $id)
     {
-        // dd($id);
+        // dd($role);
         $siftnu = config('app.database_siftnu');
         $gocap = config('app.database_gocap');
         $a = DB::table($siftnu . '.pengguna')
@@ -64,6 +64,7 @@ class Helper extends Controller
             ->where($gocap . '.' . $role . '_pengurus.status', '1')
             ->where('gocap_id_' . $role . '_pengurus', $id)
             ->first();
+            // dd($a);
         return $a->nama ?? NULL;
     }
     

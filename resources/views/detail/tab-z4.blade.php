@@ -131,51 +131,6 @@
             <div class="card mt-2">
                 <div class="card-body">
 
-                    <nav class="navbar navbar-expand-sm mb-1">
-                        <ul class="navbar-nav mr-auto my-4 my-sm-0 navbar-nav-scroll">
-                            <div class="row">
-                                <div class="col">Show</div>
-                                <div class="col">
-
-                                    <li class="nav-item p-0">
-                                        <div class="dataTables_length" id="example_length">
-                                            <select name="example_length" aria-controls="example_length"
-                                                class="custom-select custom-select-sm form-control form-control-sm">
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="20">20</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                                <option value="200">200</option>
-                                            </select>
-                                        </div>
-                                    </li>
-                                </div>
-
-
-                            </div>
-                        </ul>
-
-
-
-
-                        <form>
-
-                            <div class="input-group mr-12 float-right">
-
-                                <input wire:model="cari" type="search" class="form-control form-control-sm"
-                                    placeholder="Silahkan Cari" value="">
-
-                                <div class="input-group-append">
-                                    <button class="btn btn-sm btn-default noClick">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-
-                            </div>
-                        </form>
-                    </nav>
-
                     <div class="form-row mb-3 d-flex justify-content-end">
                         <div class="col-12 col-md-3 col-sm-12 mb-xl-0">
                             <button class="btn btn-outline-dark btn-block" style="font-size: 15px">
@@ -227,7 +182,9 @@
                             </button>
                         </div>
                     @endif
-                    <table class="table table-bordered table-hover table-responsive" style="width:100%">
+                    
+                    <div class="table-responsive ">
+                    <table class="table table-bordered table-hover" id="penggunaan_dana" style="width:100%">
                         <thead>
                             <tr class="text-center">
                                 <th style="vertical-align:middle;width: 3%;">No</th>
@@ -308,6 +265,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -321,6 +279,20 @@
 
 
 @push('script')
+    <script>
+        $(document).ready(function() {
+            $('#penggunaan_dana').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
+                },
+                "paging": true,    // Aktifkan pagination
+                "searching": true, // Aktifkan search box
+                "info": true,      // Aktifkan informasi tampilan data
+                "lengthMenu": [5, 10, 25, 50, 100], // Pilihan jumlah baris per halaman
+                "pageLength": 5 // Jumlah baris awal yang ditampilkan
+            });
+        });
+    </script>
     <script>
         window.addEventListener('closeModal', event => {
             $('#modal_internal_penggunaan_dana').modal('hide')

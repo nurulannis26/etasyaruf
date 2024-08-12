@@ -162,7 +162,6 @@ class DetailPc extends Component
     public $ringkasan;
     
     public $none_block_acc_ketua = 'none';
-    public $none_block_tolak_ketua = 'none';
     public $approval_date_ketua;
     public $catatan_ketua;
     public $status_ketua;
@@ -325,10 +324,24 @@ class DetailPc extends Component
     public $page_number = 5;
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-
+    public $none_block_tolak_ketua = 'none';
     public $keterangan_tolak_ketua;
     public $tgl_tolak_ketua;
     public $tolak_ketua;
+    
+    public $syaratDokumen;
+    public $dokumenString;
+    public $syarat_dokumen_edit;
+    public $dokumen_lainnya_edit;
+    
+    public $rekening2 = [];
+    public $id_rekening3;
+    public $nominal_pencairan3;
+    public $nominal_pencairan2;
+    public $nominal_pencairan4;
+    public $bentuk_tunai;
+    public $bentuk_transfer;
+    public $saldo_rek;
 
     public function mount()
     {
@@ -347,6 +360,14 @@ class DetailPc extends Component
         $this->tgl_penyaluran = now()->timezone('Asia/Jakarta')->format('Y-m-d');
 
         $this->tombol_pengajuan();
+        
+        if ($data_detail) {
+            $this->syarat_dokumen_edit = explode(',', $data_detail->syarat_dokumen);
+            // Jika ada dokumen lainnya, set nilainya
+            if (in_array('Lainnya', $this->syarat_dokumen_edit)) {
+                $this->dokumen_lainnya_edit = $data_detail->dokumen_lainnya; // Asumsikan ada kolom 'dokumen_lainnya'
+            }
+        }
     }
 
 
@@ -405,12 +426,14 @@ class DetailPc extends Component
         $this->jabatan_entitas_edit = $data_detail->jabatan_entitas;
         $this->nik_entitas_edit = $data_detail->nik_entitas;
         $this->nik_individu_edit = $data_detail->nik_individu;
+        $this->dokumen_lainnya_edit = $data_detail->dokumen_lainnya;
     }
 
     public function ubah_nominal_pengajuan()
     {
         $data_detail = PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
         $pengajuan = Pengajuan::where('id_pengajuan', $data_detail->id_pengajuan)->first();
+        $dokumenString = implode(',', $this->syarat_dokumen_edit);
 
         $pengajuan = Pengajuan::where('id_pengajuan', $pengajuan->id_pengajuan)->update([
             'tgl_pengajuan' => $this->tgl_pengajuan_edit,
@@ -446,6 +469,8 @@ class DetailPc extends Component
             'jabatan_entitas' => $this->jabatan_entitas_edit,
             'nik_entitas' => $this->nik_entitas_edit,
             'nik_individu' => $this->nik_individu_edit,
+            'syarat_dokumen' => $dokumenString,
+            'dokumen_lainnya' => $this->dokumen_lainnya_edit,
 
         ]);
 
@@ -463,6 +488,105 @@ class DetailPc extends Component
     {
         $this->id_pengajuan_detail = $id_pengajuan_detail;
         // dd($id_lpj_internal);
+    }
+    
+    public function tombol_tolak_ketua()
+    {
+        $this->none_block_acc = 'none';
+        $this->none_block_tolak_program = 'none';
+        $this->none_block_acc_ketua = 'none';
+        $this->none_block_acc_program = 'none';
+        $this->none_block_tolak = 'none';
+
+        if ($this->none_block_tolak_ketua == 'none') {
+            $this->none_block_tolak_ketua = 'block';
+        } elseif ($this->none_block_tolak_ketua == 'block') {
+            $this->none_block_tolak_ketua = 'none';
+        }
+
+        $data = PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
+        $this->tgl_tolak_ketua = date('Y-m-d');
+
+        if ($data->keterangan_tolak_ketua == NULL) {
+            $this->keterangan_tolak_ketua = NULL;
+        } else {
+            $this->keterangan_tolak_ketua = $data->keterangan_tolak_ketua;
+        }
+    }
+
+    public function tolak_ketua()
+    {
+        $data = DB::table($this->etasyaruf . '.pengajuan')->where('id_pengajuan', $this->id_pengajuan)->first();
+
+        PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->update([
+            'tgl_tolak_ketua' => $this->tgl_tolak_ketua,
+            'keterangan_tolak_ketua' => $this->keterangan_tolak_ketua,
+            'status_ketua' => 'Ditolak',
+            'tolak_ketua' => Auth::user()->gocap_id_pc_pengurus,
+        ]);
+        
+        $data_detail = DB::table($this->etasyaruf . '.pengajuan_detail')->where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
+
+        $front = DB::table($this->gocap . '.pengurus_jabatan as pj')
+                ->where('pj.tingkat', 'pc')
+                ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
+                ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
+                ->where('pp.status', '1')
+                ->select('pp.id_pc_pengurus')
+                ->first();
+
+        $D_ajuan = PengajuanDetail::where('id_pengajuan', $data_detail->id_pengajuan)->first();
+        $ajuan = Pengajuan::where('id_pengajuan', $data_detail->id_pengajuan)->first();
+
+        if ($ajuan->opsi_pemohon == "Individu") {
+            $pemohon = $D_ajuan->nama_pemohon;
+        } elseif ($ajuan->opsi_pemohon == "Entitas") {
+            $pemohon = $D_ajuan->nama_entitas;
+        } elseif ($ajuan->opsi_pemohon == "Internal") {
+            $pemohon = $this->nama_pengurus_pc($ajuan->pemohon_internal);
+        }
+
+        // kirim notif wa
+        $url =  "https://e-tasyaruf.nucarecilacap.id/pc/detail-pengajuan-pc/" . $this->id_pengajuan;
+
+        $asnaf = DB::table('asnaf')->where('id_asnaf', $D_ajuan->id_asnaf)->value('nama_asnaf');
+
+        // petugas penyaluran
+        $this->notif(
+            Helper::getNohpPengurus('pc', $front->id_pc_pengurus),
+            // '089639481199',
+
+            "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
+
+                "Yth. " . "*" . $this->nama_pengurus_pc($front->id_pc_pengurus) .  "*" . "\n" .
+                $this->jabatan_pengurus_pc($front->id_pc_pengurus) . "\n" . "\n" .
+
+                "*" .  "Mohon segera ditinjau kembali"  . "*" .  "\n" .
+                "Pengajuan UMUM PC Lazisnu Cilacap telah " . "*" . "di-tolak" . "*" . " oleh Ketua Lazisnu Cilacap, dengan detail sebagai berikut :" . "\n" . "\n" .
+                "*" .  "Nomor"  . "*" .  "\n" .
+                $ajuan->nomor_surat  . "\n" .
+                "*" .  "Tanggal Pengajuan"  . "*" .  "\n" .
+                \Carbon\Carbon::parse($ajuan->tgl_pengajuan)->isoFormat('D MMMM Y')  .  "\n" .
+                "*" .  "Nama Pemohon"  . "*" .  "\n" .
+                $ajuan->opsi_pemohon . " - " . $pemohon  .  "\n" .
+                "*" .  "Nominal Diajukkan"  . "*" .  "\n" .
+                'Rp' . number_format($D_ajuan->nominal_pengajuan * $D_ajuan->jumlah_penerima, 0, '.', '.') . ',-' . "(" . $D_ajuan->nominal_pengajuan . "x" . $D_ajuan->jumlah_penerima . "penerima )" . "\n" . "\n" .
+                "========================" . "\n" . "\n" .
+                "*" .  "Asnaf"  . "*" .  "\n" .
+                $asnaf .  "\n" .
+                "*" .  "Pilar"  . "*" .  "\n" .
+                $this->nama_pilars($D_ajuan->id_program_pilar) .  "\n" .
+                $this->nama_kegiatan($D_ajuan->id_program_kegiatan) .  "\n" .
+                "*" .  "Keterangan Penolakan"  . "*" .  "\n" .
+                $D_ajuan->keterangan_tolak_ketua .  "\n" . "\n" .
+
+                "Terima Kasih." . "\n" . "\n" .
+                url($url)
+        );
+
+        $this->none_block_tolak_ketua = 'none';
+        session()->flash('alert_ketua', 'Pengajuan Berhasil Ditolak');
+        $this->emit('waktu_alert');
     }
 
     public function hapus_penerima_pc()
@@ -803,6 +927,15 @@ class DetailPc extends Component
         $this->pengajuan_note_edit = NULL;
         $this->pemohon_internal_edit = NULL;
     }
+    
+    public function updateTotalNominal()
+    {
+        // dd('baba');
+        $a = str_replace('.', '', $this->nominal_pencairan3 ?? null);
+        $b = str_replace('.', '', $this->nominal_pencairan4);
+        $this->nominal_pencairan2 = number_format((int)$a + (int)$b, 0, '.', '.');
+        // dd($this->nominal_pencairan);
+    }
 
     public function render()
     {
@@ -852,12 +985,17 @@ class DetailPc extends Component
               $detail_jurnal = JurnalUmum::where('id_jurnal_umum', $detail_jurnal_id)->first();
               
               if($detail_jurnal){
-                    $get_detail = JurnalUmum::join($gocap . '.rekening', 'rekening.id_rekening', '=', 'jurnal_umum.akun')
-                  ->where('nomor', $detail_jurnal->nomor)->orderby('jurnal_umum.created_at', 'desc')->get();
+                    $get_details = JurnalUmum::join($gocap . '.rekening', 'rekening.id_rekening', '=', 'jurnal_umum.akun')
+                  ->where('nomor', $detail_jurnal->nomor)->orderby('jurnal_umum.created_at', 'desc');
+                  $get_detail = $get_details->get();
+                if ($get_detail) {
+                    $bank = $get_details->get()->groupBy('bank');
+                }
               $rekenings = Rekening::whereNotNull('id_pc')->orderby('nomor_akun', 'asc')->get();
               }else{
                   $get_detail= [];
               $rekenings = '';
+              $bank = '';
               }
             
           } else {
@@ -866,6 +1004,7 @@ class DetailPc extends Component
               $detail_jurnal = '';
               $get_detail= [];
               $rekenings = '';
+              $bank = '';
           }
 
 
@@ -940,37 +1079,7 @@ class DetailPc extends Component
         } else {
             $this->total_pencairan = number_format($data_detail->nominal_disetujui, 0, '.', '.');
         }
-
-        if ($this->id_rekening != null) {
-            $rekening = Rekening::where('id_rekening', $this->id_rekening)
-                // ->where('nama_rekening', 'PC LAZISNU CILACAP')
-                ->first();
-            $this->saldo =  number_format($rekening->saldo, 0, '.', '.');
-
-            // NAMA BMT
-            $bmt = DB::table($this->gocap . '.bmt')->where('id_bmt', $rekening->id_bmt)->first();
-            if ($bmt == NULL) {
-                $this->nama_bmt = 'BMT Belum Ada';
-            } else {
-                $this->nama_bmt = $bmt->nama_bmt;
-            }
-        } else {
-            $this->id_rekening = NULL;
-            $this->saldo = 'Pilih Rekening Terlebih Dahulu';
-        }
-
-        if ($this->id_rekening2 != null) {
-            $rekening = Rekening::where('id_rekening', $this->id_rekening2)
-                // ->where('nama_rekening', 'PC LAZISNU CILACAP')
-                ->first();
-            $this->saldo =  number_format($rekening->saldo, 0, '.', '.');
-        }
         
-        
-
-
-       
-
         $this->rekening_direktur = Rekening::where('id_pc', $data->id_pc)
             // ->join($this->gocap . '.bmt', $this->gocap . '.bmt.id_bmt', '=', $this->gocap . '.rekening.id_bmt')
             ->whereNull('id_upzis')->whereNull('id_ranting')
@@ -982,68 +1091,52 @@ class DetailPc extends Component
             )
             // ->where('nama_rekening', 'PC LAZISNU CILACAP')
             ->get();
+            
+        // transfer
+        if ($this->id_rekening2 != null) {
+            $rekening = Rekening::where('id_rekening', $this->id_rekening2)
+                // ->where('nama_rekening', 'PC LAZISNU CILACAP')
+                ->first();
+            $this->saldo =  number_format($rekening->saldo, 0, '.', '.');
+        }
+        // tunai
+        if ($this->id_rekening3 != null) {
+            $rekening2 = Rekening::where('id_rekening', $this->id_rekening3)
+                // ->where('nama_rekening', 'PC LAZISNU CILACAP')
+                ->first();
+            $this->saldo_rek =  number_format($rekening2->saldo, 0, '.', '.');
+        }
+        
+        // langsung
+          $this->rekening2 = Rekening::where('id_pc', $data->id_pc)
+          // ->join($this->gocap . '.bmt', $this->gocap . '.bmt.id_bmt', '=', $this->gocap . '.rekening.id_bmt')
+          ->whereNull('id_upzis')->whereNull('id_ranting')
+          // ->whereNotNull('id_pc')
+          ->whereNotNull('no_rekening')
+          ->whereNotNull('id_pc')
+          ->orderBy('nama_rekening','asc')
+          ->where('id_bmt', 'aac9da12-e38a-4437-9476-2cb90ee59428')
+          ->where('id_rekening', '!=', '0377f1a6-e11c-42c3-b1d2-48d73a677345')
+          ->whereNotIn('nama_rekening', ['KAS BENDA', 'KAS UANG'])
+          ->get();
+  
+        // transfer
+        $this->rekening = Rekening::where('id_pc', $data->id_pc)
+          // ->join($this->gocap . '.bmt', $this->gocap . '.bmt.id_bmt', '=', $this->gocap . '.rekening.id_bmt')
+          ->whereNull('id_upzis')->whereNull('id_ranting')
+          // ->whereNotNull('id_pc')
+          ->whereNotNull('no_rekening')
+          ->orderBy('nama_rekening','asc')
+          ->select(
+              $this->gocap . '.rekening.*',
+              // $this->gocap . '.bmt.nama_bmt',
+          )
+          // ->where('nama_rekening', 'PC LAZISNU CILACAP')
+          ->get();
 
         
         
-          if($this->metode_pencairan == 'Langsung') {
-            //  dd('baba');
-            $this->rekeningKeuanganList = Rekening::where('id_pc', $data->id_pc)
-                    // ->join($this->gocap . '.bmt', $this->gocap . '.bmt.id_bmt', '=', $this->gocap . '.rekening.id_bmt')
-                    ->whereNull('id_upzis')->whereNull('id_ranting')
-                    // ->whereNotNull('id_pc')
-                    ->whereNotNull('no_rekening')
-                    ->whereNotNull('id_pc')
-                    ->orderBy('nama_rekening','asc')
-                    ->where('id_bmt', 'aac9da12-e38a-4437-9476-2cb90ee59428')
-                    ->where('id_rekening', '!=', '0377f1a6-e11c-42c3-b1d2-48d73a677345')
-                    ->whereNotIn('nama_rekening', ['KAS BENDA', 'KAS UANG'])
-                    ->get();
-                
-         }else{
-            //   dd('babi');
-            $this->rekeningKeuanganList = Rekening::where('id_pc', $data->id_pc)
-                    // ->join($this->gocap . '.bmt', $this->gocap . '.bmt.id_bmt', '=', $this->gocap . '.rekening.id_bmt')
-                    ->whereNull('id_upzis')->whereNull('id_ranting')
-                    // ->whereNotNull('id_pc')
-                    ->whereNotNull('no_rekening')
-                    ->orderBy('nama_rekening','asc')
-                    ->select(
-                        $this->gocap . '.rekening.*',
-                        // $this->gocap . '.bmt.nama_bmt',
-                    )
-                    // ->where('nama_rekening', 'PC LAZISNU CILACAP')
-                    ->get();
-            
-         } 
-         
-         
-        //  $this->rekening_keuangan = Rekening::where('id_pc', $data->id_pc)
-        //             ->when($this->rek_cek,function($q){
-        //                 $q->whereNull('id_upzis')->whereNull('id_ranting')
-        //                 ->whereNotNull('no_rekening')
-        //                 ->where('id_rekening', '!=', $this->rek_cek->id_rekening)
-        //                 ->select(
-        //                     $this->gocap . '.rekening.*',
-        //                 );
-        //             })
-        //             ->when($this->rek_cek,function($q){
-        //                 $q->whereNull('id_upzis')->whereNull('id_ranting')
-        //                 ->whereNotNull('no_rekening')
-        //                 ->select(
-        //                     $this->gocap . '.rekening.*',
-        //                 );
-        //             })
-        //             ->when($this->metode_pencairan == 'Langsung',function($q){
-        //                 $q->whereNull('id_upzis')->whereNull('id_ranting')
-        //                 ->whereNotNull('no_rekening')
-        //                 ->whereNotNull('id_pc')
-        //                 ->where('id_bmt', 'aac9da12-e38a-4437-9476-2cb90ee59428')
-        //                 ->where('id_rekening', '!=', '0377f1a6-e11c-42c3-b1d2-48d73a677345')
-        //                 ->whereNotIn('nama_rekening', ['KAS BENDA', 'KAS UANG']);
-        //             })
-        //             ->get();
-         
-        //   dd($this->rekening_keuangan);
+          
         
 
         $c = DB::table($this->gocap . '.pengurus_jabatan as pj')
@@ -1071,8 +1164,7 @@ class DetailPc extends Component
                         $subQuery->where('keterangan', 'like', '%' . $this->cari . '%');
                     });
                 })
-                ->latest()
-                ->paginate($this->page_number);
+                ->get();
         // dd($datas);
 
         $this->updatingSearch();
@@ -1085,8 +1177,11 @@ class DetailPc extends Component
         } else {
             $sisa_dana = $data_detail->nominal_pencairan - $dana_digunakan_umum; 
         }
+        
+        $dokumenPengajuan = explode(',', $data_detail->syarat_dokumen);
 
         // dd($berita);
+        $this->updateTotalNominal();
         return view('livewire.detail-pc', compact(
             'data',
             // 'berita',
@@ -1103,7 +1198,9 @@ class DetailPc extends Component
             'lpj',
             'dana_digunakan_umum',
             'sisa_dana',
-            'datas'
+            'datas',
+            'bank',
+            'dokumenPengajuan'
         ));
     }
     
@@ -2003,8 +2100,8 @@ class DetailPc extends Component
 
                 // ketua
                 $this->notif(
-                    // Helper::getNohpPengurus('pc', $ketua->id_pc_pengurus),
-                    '089639481199',
+                    Helper::getNohpPengurus('pc', $ketua->id_pc_pengurus),
+                    // '089639481199',
 
                     "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -2044,8 +2141,8 @@ class DetailPc extends Component
 
                 // ketua
                 $this->notif(
-                    // Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
-                    '089639481199',
+                    Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
+                    // '089639481199',
 
                     "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -2091,8 +2188,8 @@ class DetailPc extends Component
 
                 // petugas penyaluran
                 $this->notif(
-                    // Helper::getNohpPengurus('pc', $d_penyaluran->id_pc_pengurus),
-                    '089639481199',
+                    Helper::getNohpPengurus('pc', $d_penyaluran->id_pc_pengurus),
+                    // '089639481199',
 
 
                     "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
@@ -2137,8 +2234,8 @@ class DetailPc extends Component
     
                     // ketua
                     $this->notif(
-                        // Helper::getNohpPengurus('pc', $ketua->id_pc_pengurus),
-                        '089639481199',
+                        Helper::getNohpPengurus('pc', $ketua->id_pc_pengurus),
+                        // '089639481199',
     
                         "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
     
@@ -2178,8 +2275,8 @@ class DetailPc extends Component
     
                     // ketua
                     $this->notif(
-                        // Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
-                        '089639481199',
+                        Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
+                        // '089639481199',
     
                         "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
     
@@ -2294,8 +2391,8 @@ class DetailPc extends Component
 
         // petugas penyaluran
         $this->notif(
-            // Helper::getNohpPengurus('pc', $keuangan->id_pc_pengurus),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $keuangan->id_pc_pengurus),
+            // '081578447350',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -2415,8 +2512,8 @@ class DetailPc extends Component
 
         // petugas penyaluran
         $this->notif(
-            // Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
+            // '081578447350',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -2454,7 +2551,6 @@ class DetailPc extends Component
         $this->emit('waktu_alert');
     }
 
-    
 
     public function tolak()
     {
@@ -2471,12 +2567,12 @@ class DetailPc extends Component
 
         // fo
         $front = DB::table($this->gocap . '.pengurus_jabatan as pj')
-                ->where('pj.tingkat', 'pc')
-                ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
-                ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
-                ->where('pp.status', '1')
-                ->select('pp.id_pc_pengurus')
-                ->first();
+    ->where('pj.tingkat', 'pc')
+    ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
+    ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
+    ->where('pp.status', '1')
+    ->select('pp.id_pc_pengurus')
+    ->first();
     // dd($front);
 
         $asnaf = DB::table('asnaf')->where('id_asnaf', $data_detail->id_asnaf)->value('nama_asnaf');
@@ -2485,8 +2581,8 @@ class DetailPc extends Component
 
         $this->notif(
             // nomor fo
-            // $this->nohp_pengurus_pc($front->id_pc_pengurus),
-            '089639481199',
+            $this->nohp_pengurus_pc($front->id_pc_pengurus),
+            // '081578447350',
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
                 "Yth. " . "*" . $this->nama_pengurus_pc($front->id_pc_pengurus) .  "*" . "\n" .
@@ -2579,8 +2675,8 @@ class DetailPc extends Component
 
         $this->notif(
             // nomor fo
-            // $this->nohp_pengurus_pc($front->id_pc_pengurus),
-            '089639481199',
+            $this->nohp_pengurus_pc($front->id_pc_pengurus),
+            // '081578447350',
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
                 "Yth. " . "*" . $this->nama_pengurus_pc($front->id_pc_pengurus) .  "*" . "\n" .
@@ -2832,105 +2928,6 @@ class DetailPc extends Component
         }
     }
 
-    public function tombol_tolak_ketua()
-    {
-        $this->none_block_acc = 'none';
-        $this->none_block_tolak_program = 'none';
-        $this->none_block_acc_ketua = 'none';
-        $this->none_block_acc_program = 'none';
-        $this->none_block_tolak = 'none';
-
-        if ($this->none_block_tolak_ketua == 'none') {
-            $this->none_block_tolak_ketua = 'block';
-        } elseif ($this->none_block_tolak_ketua == 'block') {
-            $this->none_block_tolak_ketua = 'none';
-        }
-
-        $data = PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
-        $this->tgl_tolak_ketua = date('Y-m-d');
-
-        if ($data->keterangan_tolak_ketua == NULL) {
-            $this->keterangan_tolak_ketua = NULL;
-        } else {
-            $this->keterangan_tolak_ketua = $data->keterangan_tolak_ketua;
-        }
-    }
-
-    public function tolak_ketua()
-    {
-        $data = DB::table($this->etasyaruf . '.pengajuan')->where('id_pengajuan', $this->id_pengajuan)->first();
-
-        PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->update([
-            'tgl_tolak_ketua' => $this->tgl_tolak_ketua,
-            'keterangan_tolak_ketua' => $this->keterangan_tolak_ketua,
-            'status_ketua' => 'Ditolak',
-            'tolak_ketua' => Auth::user()->gocap_id_pc_pengurus,
-        ]);
-        
-        $data_detail = DB::table($this->etasyaruf . '.pengajuan_detail')->where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
-
-        $front = DB::table($this->gocap . '.pengurus_jabatan as pj')
-                ->where('pj.tingkat', 'pc')
-                ->where('pj.id_pengurus_jabatan', '300ff4f3-725c-11ed-ad27-e4a8df91d8b3')
-                ->join($this->gocap . '.pc_pengurus as pp', 'pp.id_pengurus_jabatan', '=', 'pj.id_pengurus_jabatan')
-                ->where('pp.status', '1')
-                ->select('pp.id_pc_pengurus')
-                ->first();
-
-        $D_ajuan = PengajuanDetail::where('id_pengajuan', $data_detail->id_pengajuan)->first();
-        $ajuan = Pengajuan::where('id_pengajuan', $data_detail->id_pengajuan)->first();
-
-        if ($ajuan->opsi_pemohon == "Individu") {
-            $pemohon = $D_ajuan->nama_pemohon;
-        } elseif ($ajuan->opsi_pemohon == "Entitas") {
-            $pemohon = $D_ajuan->nama_entitas;
-        } elseif ($ajuan->opsi_pemohon == "Internal") {
-            $pemohon = $this->nama_pengurus_pc($ajuan->pemohon_internal);
-        }
-
-        // kirim notif wa
-        $url =  "https://e-tasyaruf.nucarecilacap.id/pc/detail-pengajuan-pc/" . $this->id_pengajuan;
-
-        $asnaf = DB::table('asnaf')->where('id_asnaf', $D_ajuan->id_asnaf)->value('nama_asnaf');
-
-        // petugas penyaluran
-        $this->notif(
-            // Helper::getNohpPengurus('pc', $front->id_pc_pengurus),
-            '089639481199',
-
-            "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
-
-                "Yth. " . "*" . $this->nama_pengurus_pc($front->id_pc_pengurus) .  "*" . "\n" .
-                $this->jabatan_pengurus_pc($front->id_pc_pengurus) . "\n" . "\n" .
-
-                "*" .  "Mohon segera ditinjau kembali"  . "*" .  "\n" .
-                "Pengajuan UMUM PC Lazisnu Cilacap telah " . "*" . "di-tolak" . "*" . " oleh Ketua Lazisnu Cilacap, dengan detail sebagai berikut :" . "\n" . "\n" .
-                "*" .  "Nomor"  . "*" .  "\n" .
-                $ajuan->nomor_surat  . "\n" .
-                "*" .  "Tanggal Pengajuan"  . "*" .  "\n" .
-                \Carbon\Carbon::parse($ajuan->tgl_pengajuan)->isoFormat('D MMMM Y')  .  "\n" .
-                "*" .  "Nama Pemohon"  . "*" .  "\n" .
-                $ajuan->opsi_pemohon . " - " . $pemohon  .  "\n" .
-                "*" .  "Nominal Diajukkan"  . "*" .  "\n" .
-                'Rp' . number_format($D_ajuan->nominal_pengajuan * $D_ajuan->jumlah_penerima, 0, '.', '.') . ',-' . "(" . $D_ajuan->nominal_pengajuan . "x" . $D_ajuan->jumlah_penerima . "penerima )" . "\n" . "\n" .
-                "========================" . "\n" . "\n" .
-                "*" .  "Asnaf"  . "*" .  "\n" .
-                $asnaf .  "\n" .
-                "*" .  "Pilar"  . "*" .  "\n" .
-                $this->nama_pilars($D_ajuan->id_program_pilar) .  "\n" .
-                $this->nama_kegiatan($D_ajuan->id_program_kegiatan) .  "\n" .
-                "*" .  "Keterangan Penolakan"  . "*" .  "\n" .
-                $D_ajuan->keterangan_tolak_ketua .  "\n" . "\n" .
-
-                "Terima Kasih." . "\n" . "\n" .
-                url($url)
-        );
-
-        $this->none_block_tolak_ketua = 'none';
-        session()->flash('alert_ketua', 'Pengajuan Berhasil Ditolak');
-        $this->emit('waktu_alert');
-    }
-
     public function tombol_tolak_direktur_keuangan()
     {
         $this->none_block_acc = 'none';
@@ -3063,31 +3060,56 @@ class DetailPc extends Component
 
         // pencairan
         $data_detail = DB::table($this->etasyaruf . '.pengajuan_detail')->where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
-        $this->sumber_dana_opsi_keuangan = $data_detail->sumber_dana_opsi;
+        // dd($this->nominal_disetujui2);
+        if ($data_detail->sumber_dana_opsi_keuangan == null) {
+            $this->satuan_disetujui2 = number_format($data_detail->satuan_disetujui_pencairan_direktur ?? 0, 0, '.', '.');
+            $this->nominal_disetujui2 = number_format((int)str_replace('.', '', $this->satuan_disetujui2) * $data_detail->jumlah_penerima, 0, '.', '.');
+            $this->sumber_dana_opsi_keuangan = $data_detail->sumber_dana_opsi;
+            
+            $this->id_rekening2 = '';
+            $this->id_rekening3 = '';
+           
+            if ($data_detail->bentuk_transfer == 'Transfer') {
+                $this->nominal_pencairan3 = $this->nominal_disetujui2;
+                $this->nominal_pencairan4 = $this->nominal_pencairan4 ?: '0'; // Set nominal_pencairan4 to '0' if empty
+            } else if ($data_detail->bentuk_tunai == 'Langsung') {
+                $this->nominal_pencairan4 = $this->nominal_disetujui2;
+                $this->nominal_pencairan3 = $this->nominal_pencairan3 ?: '0'; // Set nominal_pencairan3 to '0' if empty
+            } else {
+                $this->nominal_pencairan4 = '';
+                $this->nominal_pencairan3 = '';
+            }      
+        } else {
+            // dd($data_detail);
+            $this->satuan_disetujui2 =  number_format($data_detail->satuan_pencairan ?? 0, 0, '.', '.');
+            $this->nominal_disetujui2 = number_format($data_detail->nominal_pencairan ?? 0, 0, '.', '.');
+            $this->tgl_pencairan = $data_detail->tgl_pencairan;
+            $this->sumber_dana_opsi_keuangan = $data_detail->sumber_dana_opsi_keuangan;
+            $this->id_rekening2 = $data_detail->id_rekening;
+            $this->id_rekening3 = $data_detail->id_rekening2;
+            $this->atas_nama_penerima = $data_detail->atas_nama_penerima;
+            $this->nama_bank_penerima = $data_detail->nama_bank_penerima;
+            $this->no_rek_penerima = $data_detail->no_rek_penerima;
+            $this->keterangan_pencairan = $data_detail->keterangan_pencairan;
+            // dd($data_detail->biaya);
+            $nominal_pencairan3 = (float) ($data_detail->nominal_pencairan2 ?? 0);
+            $nominal_pencairan4 = (float) ($data_detail->nominal_pencairan3 ?? 0);
+            
+            if ($data_detail->bentuk_transfer == 'Transfer' and $data_detail->metode_pencairan == null or $data_detail->bentuk_tunai == 'Langsung') {
+            $this->nominal_pencairan3 = number_format((float) ($data_detail->nominal_pencairan2 ?? 0), 0, '.', '.');
+            $this->nominal_pencairan4 = number_format((float) ($data_detail->nominal_pencairan3 ?? 0), 0, '.', '.');
+            } elseif ($data_detail->bentuk_tunai == 'Langsung' and $data_detail->metode_pencairan == null or $data_detail->bentuk_transfer == 'Transfer') {
+            $this->nominal_pencairan4 = number_format((float) ($data_detail->nominal_pencairan3 ?? 0), 0, '.', '.');
+            $this->nominal_pencairan3 = number_format((float) ($data_detail->nominal_pencairan2 ?? 0), 0, '.', '.');
+            } elseif ($data_detail->metode_pencairan == 'Transfer' and $data_detail->bentuk_transfer == 'Transfer') {
+            $this->nominal_pencairan3 = number_format((float) ($data_detail->nominal_pencairan ?? 0), 0, '.', '.');
+            } elseif ($data_detail->metode_pencairan == 'Langsung' and $data_detail->bentuk_tunai == 'Langsung') {
+            $this->nominal_pencairan4 = number_format((float) ($data_detail->nominal_pencairan ?? 0), 0, '.', '.');
+            }
 
-        $this->satuan_disetujui2 = $data_detail->satuan_disetujui_pencairan_direktur;
-
-
-        // $this->satuan_disetujui2 = number_format($this->satuan_disetujui2, 0, '.', '.');
-        // $this->nominal_disetujui2 = number_format($this->nominal_disetujui2, 0, '.', '.');
-
-
-
-
-
-
-
-        // dd($this->id_rekening_cek);
-        // $rekening = Rekening::where('id_rekening', $data_detail->id_rekening)
-        //     ->first();
-        // if ($rekening) {
-        //     // $this->info_rekening = $rekening->nama_rekening . ' - ' . $rekening->no_rekening . ' - Rp' . number_format($rekening->saldo, 0, '.', '.');
-        //     $this->id_rekening2 = $data_detail->id_rekening;
-        //     $this->satuan_disetujui2 = number_format($data_detail->satuan_disetujui, 0, '.', '.');
-        // }
-
-        // $this->satuan_disetujui2 = number_format($data_detail->satuan_disetujui, 0, '.', '.');
-        // dd($this->satuan_disetujui2);
+            $this->nominal_pencairan2 = number_format($nominal_pencairan3 + $nominal_pencairan4, 0, '.', '.');
+            // dd($data_detail);
+       }
     }
     
     public function tombol_acc_ketua()
@@ -3161,8 +3183,8 @@ class DetailPc extends Component
 
         // petugas penyaluran
         $this->notif(
-            // Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
+            // '089639481199',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -3582,8 +3604,8 @@ class DetailPc extends Component
 
         // petugas
         $this->notif(
-            // $this->nohp_pengurus_pc($front->id_pc_pengurus),
-            '089639481199',
+            $this->nohp_pengurus_pc($front->id_pc_pengurus),
+            // '081578447350',
 
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
@@ -3665,21 +3687,50 @@ class DetailPc extends Component
 
         $nomor_kwitansi_pencairan = $nomor . '/' . 'keu_lazisnucilacap' . '/'  . $bulan . '/' . $tahun;
 
-        PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->update([
+        $updateData = [
             'pencairan_status' => 'Berhasil Dicairkan',
             'tgl_pencairan' => $this->tgl_pencairan,
             'dicairkan_kepada' => $data_detail->petugas_pc,
             'nominal_pencairan' => str_replace('.', '', $this->nominal_disetujui2),
             'satuan_pencairan' => str_replace('.', '', $this->satuan_disetujui2),
+            'nominal_pencairan2' => is_numeric($this->nominal_pencairan3) ? str_replace('.', '', $this->nominal_pencairan3) : NULL,
+            'nominal_pencairan3' => is_numeric($this->nominal_pencairan4) ? str_replace('.', '', $this->nominal_pencairan4) : NULL,
             'keterangan_pencairan' => $this->keterangan_pencairan,
             'metode_pencairan' => $this->metode_pencairan,
             'id_rekening' => $this->id_rekening2,
+            'id_rekening2' => $this->id_rekening3,
             'nomor_kwitansi_pencairan' => $nomor_kwitansi_pencairan,
             'no_rek_penerima' => $this->no_rek_penerima,
             'nama_bank_penerima' => $this->nama_bank_penerima,
             'atas_nama_penerima' => $this->atas_nama_penerima,
+            'sumber_dana_opsi_keuangan' => $this->sumber_dana_opsi_keuangan,
             // 'file' => $kwitansi_name,
-        ]);
+        ];
+
+        if ($this->id_rekening2 and $this->id_rekening3 == null) {
+            $updateData['bentuk_transfer'] = 'Transfer';
+            $this->bentuk_transfer = 'Transfer';
+        } else {
+            $updateData['bentuk_transfer'] = null;
+            $this->bentuk_transfer = null;
+        }
+        
+        if ($this->id_rekening3 and $this->id_rekening2 == null) {
+            $updateData['bentuk_tunai'] = 'Langsung';
+            $this->bentuk_tunai = 'Langsung';
+        } else {
+            $updateData['bentuk_tunai'] = null;
+            $this->bentuk_tunai = null;
+        }
+
+        if ($this->id_rekening3 and $this->id_rekening2) {
+            $updateData['bentuk_tunai'] = 'Langsung';
+            $this->bentuk_tunai = 'Langsung';
+            $updateData['bentuk_transfer'] = 'Transfer';
+            $this->bentuk_transfer = 'Transfer';
+        }
+
+        PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->update($updateData);
         
         $year = Carbon::parse(now())->format('Y');
         $month = Carbon::parse(now())->format('m');
@@ -3718,18 +3769,20 @@ class DetailPc extends Component
         $keterangan = $data_detail->pengajuan_note;
 
 
-        if ($this->metode_pencairan == 'Langsung') {
+        if ($this->bentuk_transfer == 'Transfer') {
             if ($this->sumber_dana_opsi_keuangan == 'Dana Zakat') {
-                $akunkrd = '968cdc01-1f81-4b26-a397-348bc1d48db3';
+                $akunkrd_transfer = '98aab355-1cc9-4538-a7b7-f7d8ab7f7662';
             } elseif ($this->sumber_dana_opsi_keuangan == 'Dana Infak Terikat' || $this->sumber_dana_opsi_keuangan == 'Dana Infak Umum') {
-                $akunkrd = '618944ad-2f49-4f9c-9c3d-cd7f75bb9db1';
-            }
-        } elseif ($this->metode_pencairan == 'Transfer') {
+                $akunkrd_transfer = 'd38525ee-416c-442b-bbad-679d861f032a';
+            } 
+        }
+
+        if ($this->bentuk_tunai == 'Langsung') {
             if ($this->sumber_dana_opsi_keuangan == 'Dana Zakat') {
-                $akunkrd = '98aab355-1cc9-4538-a7b7-f7d8ab7f7662';
+                $akunkrd_tunai = '968cdc01-1f81-4b26-a397-348bc1d48db3';
             } elseif ($this->sumber_dana_opsi_keuangan == 'Dana Infak Terikat' || $this->sumber_dana_opsi_keuangan == 'Dana Infak Umum') {
-                $akunkrd = 'd38525ee-416c-442b-bbad-679d861f032a';
-            }
+                $akunkrd_tunai = '618944ad-2f49-4f9c-9c3d-cd7f75bb9db1';
+            } 
         }
 
 
@@ -3814,87 +3867,196 @@ class DetailPc extends Component
                 $akundb = '24c76c72-9bd0-4252-8bdc-b987a1190952';
             }
         }
+
+        $jurnal = JurnalUmum::where('id_pengajuan_detail', $this->id_pengajuan_detail)->get();
+
+        // Check if any records are found
+        if ($jurnal->isNotEmpty()) {
+            // Loop through the records and delete each one
+            foreach ($jurnal as $entry) {
+                $entry->delete();
+            }
+        }
+
+
+        if ($this->id_rekening2 and $this->id_rekening3 == null) {
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akunkrd_transfer,
+                'bank' => $this->id_rekening2,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => 0,
+                'kredit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3)) : 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+    
+    
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akundb,
+                'bank' => $this->id_rekening2,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3)) : 0,
+                'kredit' => 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+        }
+            
+        if ($this->id_rekening3 and $this->id_rekening2 == null) {
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akunkrd_tunai,
+                'bank' => $this->id_rekening3,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => 0,
+                'kredit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4)) : 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+    
+    
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akundb,
+                'bank' => $this->id_rekening3,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4)) : 0,
+                'kredit' => 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+        }
         
+        if ($this->id_rekening3 and $this->id_rekening2) {
+            // dd($akunkrd_transfer, $akunkrd_tunai);
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akunkrd_tunai,
+                'bank' => $this->id_rekening3,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => 0,
+                'kredit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4)) : 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+    
+    
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akundb,
+                'bank' => $this->id_rekening3,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan4)) : 0,
+                'kredit' => 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
 
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akunkrd_transfer,
+                'bank' => $this->id_rekening2,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => 0,
+                'kredit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3)) : 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+    
+    
+            JurnalUmum::create([
+                'id_jurnal_umum' => Str::uuid()->toString(),
+                'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
+                'tgl_transaksi' => $data_detail->tgl_pencairan,
+                'nomor' => $nomor,
+                'no_urut' => $nomor_urut,
+                'jenis' => 'Keluar',
+                'akun' => $akundb,
+                'bank' => $this->id_rekening2,
+                'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
+                'debit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_pencairan3)) : 0,
+                'kredit' => 0,
+                'id_pengguna' => Auth::user()->id_pengguna,
+            ]);
+            
+            
+        }
 
-        // //PENGUATAN KELEMBAGAAN
-        // if ($programPilar == 'ba84d782-81a8-11ed-b4ef-dc215c5aad51') {
-        //     $akundb = '4250a6a0-2560-4d4b-94bb-b0d16f0a43bb';
-        // }
-        // //PROGRAM SOSIAL
-        // elseif ($programPilar == 'bed10d9c-81a8-11ed-b4ef-dc215c5aad51') {
-        //     $akundb = 'a13e0322-7995-4f11-88f4-f51f862bcc57';
-        // }
-        // //OPERASIONAL UPZIS
-        // elseif ($programPilar == 'c51700b1-81a8-11ed-b4ef-dc215c5aad51') {
-        //     $akundb = '40b7c6f8-96ee-4104-82fd-a7c39b1f3bd1';
-        // }
+         $arus = ArusDana::where('id_etasyaruf_permohonan_pentasyarufan_koin', $this->id_pengajuan_detail)->first();
 
-
-        JurnalUmum::create([
-            'id_jurnal_umum' => Str::uuid()->toString(),
-            'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
-            'tgl_transaksi' => now()->format('Y-m-d'),
-            'nomor' => $nomor,
-            'no_urut' => $nomor_urut,
-            'jenis' => 'Keluar',
-            'akun' => $akunkrd,
-            'bank' => $this->id_rekening2,
-            'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
-            'debit' => 0,
-            'kredit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_disetujui2))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_disetujui2)) : 0,
-            'id_pengguna' => Auth::user()->id_pengguna,
-        ]);
-
-
-        JurnalUmum::create([
-            'id_jurnal_umum' => Str::uuid()->toString(),
-            'id_pengajuan_detail' => $data_detail->id_pengajuan_detail,
-            'tgl_transaksi' => now()->format('Y-m-d'),
-            'nomor' => $nomor,
-            'no_urut' => $nomor_urut,
-            'jenis' => 'Keluar',
-            'akun' => $akundb,
-            'bank' => $this->id_rekening2,
-            'deskripsi' => '[ ' . $pilar . ']' . ' - ' . $nama_kegiatan . ' - ' . $keterangan,
-            'debit' => is_numeric(str_replace(',', '.', str_replace('.', '', $this->nominal_disetujui2))) ? str_replace(',', '.', str_replace('.', '', $this->nominal_disetujui2)) : 0,
-            'kredit' => 0,
-            'id_pengguna' => Auth::user()->id_pengguna,
-        ]);
-
-        // dd('Testing Data Jurnal Umum Tersimpan ' . $data_detail->id_pengajuan_detail);
-
-
-        // $data = PengajuanDetail::where('id_pengajuan_detail', $this->id_pengajuan_detail)->first();
-
-
-        // $ext = $this->kwitansi->extension();
-        // $kwitansi_name = 'KWT-PC-' . Str::random(10) . '.' . $ext;
-        // $this->kwitansi->storeAs('pengajuan_kwitansi', $kwitansi_name);
-
-        $id_arus_dana = Str::uuid();
-
-      
-        $rekening = Rekening::where('id_rekening', $this->id_rekening2)
-            ->first();
-        $saldo_sisa = $rekening->saldo - (str_replace('.', '', $this->total_pencairan));
-        Rekening::where('id_rekening', $this->id_rekening2)->update([
-            'saldo' => $saldo_sisa
-        ]);
+        if ($this->id_rekening2) {
+            Rekening::where('id_rekening', $this->id_rekening2)->decrement('saldo', str_replace('.', '', $this->nominal_pencairan3));
+            // Check if any records are found
+             if ($arus) {
+                Rekening::where('id_rekening', $arus->id_rekening)->increment('saldo', str_replace('.', '', $this->nominal_pencairan3));
+                $arus->delete();
+             }
         
-
-        // dd($this->nominal_disetujui);
-        ArusDana::create([
-            'id_arus_dana' => $id_arus_dana,
-            'id_rekening' => $this->id_rekening2,
-            'jenis_dana' => 'keluar',
-            'jenis_kas' => 'Pentasyarufan Koin NU',
-            'nominal' => str_replace('.', '', $this->nominal_disetujui2),
-            'tanggal_input' => $this->tgl_pencairan,
-            'petugas_input_pc' => $data_detail->staf_keuangan_pc,
-            'id_etasyaruf_permohonan_pentasyarufan_koin' => $data_detail->id_pengajuan_detail,
-            'uraian' => $this->nama_kegiatan($data_detail->id_program_kegiatan)
-        ]);
+            $id_arus_dana = Str::uuid();
+            ArusDana::create([
+                'id_arus_dana' => $id_arus_dana,
+                'id_rekening' => $this->id_rekening2,
+                'jenis_dana' => 'keluar',
+                'jenis_kas' => 'Pentasyarufan Koin NU',
+                'nominal' => str_replace('.', '', $this->nominal_pencairan3),
+                'tanggal_input' => date('Y-m-d'),
+                'petugas_input_pc' => Auth::user()->gocap_id_pc_pengurus,
+                'id_etasyaruf_permohonan_pentasyarufan_koin' => $data_detail->id_pengajuan_detail,
+                'uraian' => $this->nama_kegiatan($data_detail->id_program_kegiatan)
+            ]);
+        } 
+    
+            if ($this->id_rekening3) {
+            Rekening::where('id_rekening', $this->id_rekening3)->decrement('saldo', str_replace('.', '', $this->nominal_pencairan4));
+            if ($arus) {
+                Rekening::where('id_rekening', $arus->id_rekening)->increment('saldo', str_replace('.', '', $this->nominal_pencairan4));
+                $arus->delete();
+             }
+            
+            $id_arus_dana = Str::uuid();
+            ArusDana::create([
+                'id_arus_dana' => $id_arus_dana,
+                'id_rekening' => $this->id_rekening3,
+                'jenis_dana' => 'keluar',
+                'jenis_kas' => 'Pentasyarufan Koin NU',
+                'nominal' => str_replace('.', '', $this->nominal_pencairan4),
+                'tanggal_input' => date('Y-m-d'),
+                'petugas_input_pc' => Auth::user()->gocap_id_pc_pengurus,
+                'id_etasyaruf_permohonan_pentasyarufan_koin' => $data_detail->id_pengajuan_detail,
+                'uraian' => $this->nama_kegiatan($data_detail->id_program_kegiatan)
+            ]);
+        } 
+       
 
 
 
@@ -3928,8 +4090,8 @@ class DetailPc extends Component
 
         // petugas penyaluran
         $this->notif(
-            // Helper::getNohpPengurus('pc', $pyl->id_pc_pengurus),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $pyl->id_pc_pengurus),
+            // '089639481199',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -4303,8 +4465,8 @@ class DetailPc extends Component
 
         // dd($D_ajuan->sumber_dana . '\\'. $this->nama_pengurus_pc($program->id_pc_pengurus) . '\\'. $this->jabatan_pengurus_pc($program->id_pc_pengurus) );
         $this->notif(
-            // Helper::getNohpPengurus('pc', $program->id_pc_pengurus),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $program->id_pc_pengurus),
+            // '081578447350',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 
@@ -4385,8 +4547,8 @@ class DetailPc extends Component
 
         // petugas penyaluran
         $this->notif(
-            // Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
-            '089639481199',
+            Helper::getNohpPengurus('pc', $direktur->id_pc_pengurus),
+            // '081578447350',
 
             "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
 

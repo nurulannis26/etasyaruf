@@ -218,7 +218,7 @@ class DetailInternalPc extends Component
             // dd($detail_jurnal);
             
             if($detail_jurnal){
-                $get_details = JurnalUmum::join($gocap . '.rekening', 'rekening.id_rekening', '=', 'jurnal_umum.akun')
+             $get_details = JurnalUmum::join($gocap . '.rekening', 'rekening.id_rekening', '=', 'jurnal_umum.akun')
                     ->where('nomor', $detail_jurnal->nomor)->orderby('jurnal_umum.created_at', 'desc');
     
                 $get_detail = $get_details->get();
@@ -228,7 +228,7 @@ class DetailInternalPc extends Component
                     // dd($get_detail);
                 $rekenings = Rekening::whereNotNull('id_pc')->orderby('nomor_akun', 'asc')->get();
             }else{
-                    $get_detail= [];
+                $get_detail= [];
                 $rekenings = '';
                 $bank = '';
             }
@@ -250,8 +250,8 @@ class DetailInternalPc extends Component
                         $subQuery->where('keterangan', 'like', '%' . $this->cari . '%');
                     });
                 })
-                ->latest()
-                ->paginate($this->page_number);
+                ->get();
+                // ->paginate($this->page_number);
 
         $this->updatingSearch();
         $dana_digunakan_internal = lpjInternal::where('id_internal', $this->id_internal)->sum('nominal');
@@ -281,6 +281,7 @@ class DetailInternalPc extends Component
 
         $this->tab_z2();
         // $this->tab_z4();
+        
         $this->updateTotalNominal(); 
         
         return view('livewire.detail-internal-pc', compact(
@@ -585,6 +586,21 @@ class DetailInternalPc extends Component
         // }
 
         $data = Internal::where('id_internal', $this->id_internal)->first();
+         $this->rekening2 = Rekening::where('id_pc', $data->id_pc)->whereNull('id_upzis')->whereNull('id_ranting')
+                            ->whereNotNull('no_rekening')
+                            ->whereNotNull('id_pc')
+                            ->where('id_bmt', 'aac9da12-e38a-4437-9476-2cb90ee59428')
+                            ->where('id_rekening', '!=', '0377f1a6-e11c-42c3-b1d2-48d73a677345')
+                            ->whereNotIn('nama_rekening', ['KAS BENDA', 'KAS UANG'])
+                            ->get();
+                            
+        $this->rekening = Rekening::where('id_pc', $data->id_pc)->whereNull('id_upzis')->whereNull('id_ranting')
+                            ->whereNotNull('no_rekening')
+                            ->whereNotNull('id_pc')
+                            ->where('id_bmt', '!=', 'aac9da12-e38a-4437-9476-2cb90ee59428')
+                            ->whereNotIn('nama_rekening', ['KAS BENDA', 'KAS UANG'])
+                            ->get();
+
         $this->rekening2 = Rekening::where('id_pc', $data->id_pc)->whereNull('id_upzis')->whereNull('id_ranting')
                             ->whereNotNull('no_rekening')
                             ->whereNotNull('id_pc')
@@ -1245,7 +1261,6 @@ class DetailInternalPc extends Component
         ]);
 
          $url =  "https://e-tasyaruf.nucarecilacap.id/pc/detail-pengajuan-internal-pc/" . "$this->id_internal";
-         $asnaf = DB::table('asnaf')->where('id_asnaf', $data->id_asnaf)->value('nama_asnaf');
 
         $this->notif(
             Helper::getNohpPengurus('pc', $this->staf_keuangan),
@@ -1688,7 +1703,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1704,7 +1719,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1721,7 +1736,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1737,7 +1752,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1755,7 +1770,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1771,7 +1786,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1786,7 +1801,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1802,7 +1817,7 @@ class DetailInternalPc extends Component
             JurnalUmum::create([
                 'id_jurnal_umum' => Str::uuid()->toString(),
                 'id_internal' => $data->id_internal,
-                'tgl_transaksi' => now()->format('Y-m-d'),
+                'tgl_transaksi' => $data->tgl_pencairan,
                 'nomor' => $nomor,
                 'no_urut' => $nomor_urut,
                 'jenis' => 'Keluar',
@@ -1872,8 +1887,8 @@ class DetailInternalPc extends Component
 
         if ($this->bentuk_tunai == 'Cash' and $this->bentuk_transfer == null) {
             $this->notif(
-                // Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-              '089639481199',
+                Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //   '089639481199',
                "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                    "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                    Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .
@@ -1912,8 +1927,8 @@ class DetailInternalPc extends Component
         
         if ($this->bentuk_tunai == null and $this->bentuk_transfer == 'Transfer') {
             $this->notif(
-                // Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-               '089639481199',
+                Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //   '089639481199',
                "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                    "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                    Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .
@@ -1952,8 +1967,8 @@ class DetailInternalPc extends Component
 
         if ($this->bentuk_tunai == 'Cash' and $this->bentuk_transfer == 'Transfer') {
             $this->notif(
-                // Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
-               '089639481199',
+                Helper::getNohpPengurus('pc', $data->maker_tingkat_pc),
+            //   '089639481199',
                "Assalamualaikum Warahmatullahi Wabarakatuh" . "\n" . "\n" .
                    "Yth. " . "*" . Helper::getNamaPengurus('pc', $data->maker_tingkat_pc) .  "*" . "\n" .
                    Helper::getJabatanPengurus('pc', $data->maker_tingkat_pc)  . "\n" . "\n" .

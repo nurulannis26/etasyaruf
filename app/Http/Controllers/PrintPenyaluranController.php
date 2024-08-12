@@ -241,20 +241,45 @@ class PrintPenyaluranController extends Controller
             }
     }
 
+    // public function print_tanda_terima_fo($id)
+    // {
+    //     $pengajuan = Pengajuan::where('id_pengajuan',$id)->first();
+    //     $D_pengajuan = PengajuanDetail::where('id_pengajuan',$id)->first();
+    //     $jenis_penerima = $D_pengajuan->jenis_tanda_terima;
+    //     $pdf = PDF::loadview(
+    //         'disposisi_penyaluran.print_tanda_terima_fo',compact('jenis_penerima','pengajuan','D_pengajuan')
+    //     )->setPaper('a4', 'portrait');
+    //     return $pdf->stream()->withHeaders([
+    //         'Title' => 'Your meta title',
+    //         'Content-Type' => 'application/pdf',
+    //         'Cache-Control' => 'no-store, no-cache',
+    //         'Content-Disposition' => 'filename="' . $pengajuan->nomor_surat . '_TANDA_TERIMA_FO.pdf',
+    //     ]);
+    // }
     public function print_tanda_terima_fo($id)
     {
         // dd($id);
-        $pengajuan = Pengajuan::where('id_pengajuan',$id)->first();
-        $D_pengajuan = PengajuanDetail::where('id_pengajuan',$id)->first();
-        $jenis_penerima = $D_pengajuan->jenis_tanda_terima;
+        $data = Pengajuan::join('pengajuan_detail', 'pengajuan_detail.id_pengajuan', '=', 'pengajuan.id_pengajuan')
+                    ->where('pengajuan.id_pengajuan', $id)
+                    ->select('pengajuan.*', 'pengajuan_detail.*')
+                    ->first();
+        // dd($data);
+
+        $dokumen = [];
+        $dokumenPengajuan = $data->syarat_dokumen;
+        if ($dokumenPengajuan) {
+            $dokumen = explode(',', $dokumenPengajuan);
+        }
+        // dd($dokumen);
+
         $pdf = PDF::loadview(
-            'disposisi_penyaluran.print_tanda_terima_fo',compact('jenis_penerima','pengajuan','D_pengajuan')
+            'disposisi_penyaluran.print_tanda_terima_fo2',compact('data', 'dokumen')
         )->setPaper('a4', 'portrait');
         return $pdf->stream()->withHeaders([
             'Title' => 'Your meta title',
             'Content-Type' => 'application/pdf',
             'Cache-Control' => 'no-store, no-cache',
-            'Content-Disposition' => 'filename="' . $pengajuan->nomor_surat . '_TANDA_TERIMA_FO.pdf',
+            'Content-Disposition' => 'filename="' . $data->nomor_surat . '_TANDA_TERIMA_FO.pdf',
         ]);
     }
 }

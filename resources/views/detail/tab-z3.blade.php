@@ -280,13 +280,12 @@
                                         id="nominal_disetujui" placeholder="Masukan Nominal Satuan Disetujui">
                                 </div>
                             </div>
-
+                            
                             <div class="form-group col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text bor-abu"
-                                            style="width: 200px; display: flex; justify-content: center; align-items: center;">Rekomendasi
-                                            Sumber
+                                            style="width: 200px; display: flex; justify-content: center; align-items: center;">Rekomendasi Sumber
                                             Dana</span>
                                     </div>
                                     <select wire:model="sumber_dana" wire:loading.attr="disabled"
@@ -300,7 +299,7 @@
                                 </div>
 
                             </div>
-
+                            
                             {{-- asnaf --}}
                             @if ($this->sumber_dana == 'Dana Zakat')
                                 <div class="form-group col-md-12">
@@ -400,8 +399,8 @@
                                     $this->id_program_kegiatan = null;
                                 @endphp
                             @endif
-
-
+                            
+                           
 
                             <div class="form-group col-md-12">
                                 <div class="input-group">
@@ -442,8 +441,7 @@
                             <div class="form-group col-md-3">
                                 @if (
                                     $staf_keuangan == '' or
-                                        $nominal_disetujui == '' or
-                                        str_replace('.', '', $nominal_disetujui) > str_replace('.', '', $saldo))
+                                        $nominal_disetujui == '' )
                                     <button class="btn btn-success btn-block" disabled wire:loading.attr="disabled"><i
                                             class="fas fa-check-circle"></i>
                                         ACC</button>
@@ -614,7 +612,7 @@
 
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td class="text-bold">Rekomendasi Sumber Dana
                             </td>
@@ -627,26 +625,26 @@
                                 @endif
                             </td>
                         </tr>
+                        
+                            <tr>
+                                <td class="text-bold">Asnaf
+                                </td>
+                                <td>
+                                    {{ $asnaf ?? '-' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Pilar
+                                </td>
+                                <td>
+                                    <b style="font-size: 12pt;">
+                                        {{ $this->nama_pilar($data->id_program_pilar) ?? '-' }}
+                                    </b> <br>
+                                    {{ $this->nama_kegiatan($data->id_program_kegiatan) ?? '-' }}
 
-                        <tr>
-                            <td class="text-bold">Asnaf
-                            </td>
-                            <td>
-                                {{ $asnaf ?? '-' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-bold">Pilar
-                            </td>
-                            <td>
-                                <b style="font-size: 12pt;">
-                                    {{ $this->nama_pilar($data->id_program_pilar) ?? '-' }}
-                                </b> <br>
-                                {{ $this->nama_kegiatan($data->id_program_kegiatan) ?? '-' }}
 
-
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
 
                         {{-- <tr>
                             <td class="text-bold">Rekening Sumber Dana
@@ -759,51 +757,53 @@
                 {{-- {{ dd($data->staf_keuangan_pc) }} --}}
                 @if (Auth::user()->gocap_id_pc_pengurus == $data->staf_keuangan_pc)
 
-                    @if ($data->approval_status == 'Belum Direspon' or $data->approval_status == 'Ditolak')
-                        <div class="mr-2">
-                            <div class="btn-group float-right">
-                                <button type="button" class="btn" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false" style="background-color: #cccccc" disabled>Respon</button>
-                                <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
-                                    data-toggle="dropdown" disabled aria-haspopup="true" aria-expanded="false"
-                                    style="background-color: #cccccc">
-                                    <span class="sr-only">Toggle
-                                        Dropdown</span>
-                                </button>
-                            </div>
-
-                        </div>
-                    @else
-                        <div class="mr-2">
-                            <div class="btn-group float-right">
-                                <button type="button" class="btn" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false" style="background-color: #cccccc">Respon</button>
-                                <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                    style="background-color: #cccccc">
-                                    <span class="sr-only">Toggle
-                                        Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu ">
-                                    <a wire:click="tombol_acc" onMouseOver="this.style.color='green'"
-                                        onMouseOut="this.style.color='black'" class="dropdown-item" type="button"><i
-                                            class="fas fa-user-check"></i>
-                                        @if ($data->pencairan_status == 'Belum Dicairkan')
-                                            Cairkan Dana
-                                        @else
-                                            Cairkan Ulang
-                                        @endif
-                                    </a>
-                                    <a wire:click="tombol_tolak_keuangan" onMouseOver="this.style.color='red'"
-                                        onMouseOut="this.style.color='black'" class="dropdown-item"
-                                        data-toggle="modal" data-target="#modal_tolak" type="button"><i
-                                            class="fas fa-ban"></i>
-                                        Tolak</a>
+                        @if ($data->approval_status == 'Belum Direspon' or $data->approval_status == 'Ditolak')
+                            <div class="mr-2">
+                                <div class="btn-group float-right">
+                                    <button type="button" class="btn" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false" style="background-color: #cccccc"
+                                        disabled>Respon</button>
+                                    <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown" disabled aria-haspopup="true" aria-expanded="false"
+                                        style="background-color: #cccccc">
+                                        <span class="sr-only">Toggle
+                                            Dropdown</span>
+                                    </button>
                                 </div>
-                            </div>
 
-                        </div>
-                    @endif
+                            </div>
+                        @else
+                            <div class="mr-2">
+                                <div class="btn-group float-right">
+                                    <button type="button" class="btn" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"
+                                        style="background-color: #cccccc">Respon</button>
+                                    <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                        style="background-color: #cccccc">
+                                        <span class="sr-only">Toggle
+                                            Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu ">
+                                        <a wire:click="tombol_acc" onMouseOver="this.style.color='green'"
+                                            onMouseOut="this.style.color='black'" class="dropdown-item"
+                                            type="button"><i class="fas fa-user-check"></i>
+                                            @if ($data->pencairan_status == 'Belum Dicairkan')
+                                                Cairkan Dana
+                                            @else
+                                                Cairkan Ulang
+                                            @endif
+                                            </a>
+                                        <a wire:click="tombol_tolak_keuangan" onMouseOver="this.style.color='red'"
+                                            onMouseOut="this.style.color='black'" class="dropdown-item"
+                                            data-toggle="modal" data-target="#modal_tolak" type="button"><i
+                                                class="fas fa-ban"></i>
+                                            Tolak</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        @endif
 
                 @endif
             </div>
@@ -1213,14 +1213,13 @@
                                     @endif
                                 </td>
                             </tr>
-
+                            
                             <tr>
                                 <td class="text-bold" style="width: 30%;vertical-align: middle;">
                                     Sumber Dana
                                 </td>
                                 <td style="vertical-align: middle;">
-                                    <span
-                                        style="font-size: 12pt;">{{ $data->sumber_dana_opsi_keuangan ?? '-' }}</span>
+                                    <span style="font-size: 12pt;">{{ $data->sumber_dana_opsi_keuangan ?? '-' }}</span>
                                 </td>
                             </tr>
 
@@ -1366,14 +1365,17 @@
                                     @if (Auth::user()->gocap_id_pc_pengurus == $data->maker_tingkat_pc and $data->pencairan_status == 'Berhasil Dicairkan')
                                         <button wire:click="sendNotifKwitansi()"
                                             class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2"
-                                            role="button" style="border-radius:10px; width:3cm;"
-                                            @if ($data->terima_kwitansi == '1') disabled @endif>Terima
+                                            role="button" style="border-radius:10px; width:3cm;" @if ($data->terima_kwitansi == '1') disabled @endif>Terima
                                             Kwitansi
                                         </button>
                                     @endif
 
                                 </td>
                             </tr>
+                            
+                            
+
+                            
                         @else
                             <tr>
                                 <td class="text-bold" style="width: 30%;vertical-align: middle;">
@@ -1448,8 +1450,7 @@
             @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '694f38af-5374-11ed-882e-e4a8df91d8b3')
                 <button class="btn btn-outline-success btn-sm tombol-tambah"
                     wire:click="modal_lampiran_pencairan_tambah_internal" class="btn btn-primary" data-toggle="modal"
-                    data-target="#modal_lampiran_pencairan_tambah_internal" type="button"><i
-                        class="fas fa-plus-circle"></i>
+                    data-target="#modal_lampiran_pencairan_tambah_internal" type="button"><i class="fas fa-plus-circle"></i>
                     Tambah</button>
             @endif
         </div>
@@ -1535,9 +1536,9 @@
                                             class="dropdown-item tombol-ubah"
                                             wire:click="modal_lampiran_pencairan_ubah_internal('{{ $lp->id_lampiran_pencairan }}')"
                                             type="button" data-toggle="modal"
-                                            data-target="#modal_lampiran_pencairan_ubah_internal"><i
-                                                class="fas fa-edit" style="width:20px"></>
-                                                Ubah</a>
+                                            data-target="#modal_lampiran_pencairan_ubah_internal"><i class="fas fa-edit"
+                                                style="width:20px"></i>
+                                            Ubah</a>
                                         <a onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'"
                                             class="dropdown-item"
                                             wire:click="modal_lampiran_pencairan_hapus_internal('{{ $lp->id_lampiran_pencairan }}')"
@@ -1591,37 +1592,37 @@
 @include('modal.modal_lampiran_pencairan_hapus_internal')
 
 @push('script')
-    <script>
-        Livewire.on('dataTersimpanTambah', () => {
-            $('#modal_lampiran_pencairan_tambah_internal').modal('hide');
-        });
-    </script>
+<script>
+    Livewire.on('dataTersimpanTambah', () => {
+        $('#modal_lampiran_pencairan_tambah_internal').modal('hide');
+    });
+</script>
 
-    <script>
-        Livewire.on('dataTersimpanHapus', () => {
-            $('#modal_lampiran_pencairan_hapus_internal').modal('hide');
-        });
-    </script>
+<script>
+    Livewire.on('dataTersimpanHapus', () => {
+        $('#modal_lampiran_pencairan_hapus_internal').modal('hide');
+    });
+</script>
 
-    <script>
-        Livewire.on('dataTersimpanPerubahan', () => {
-            $('#modal_lampiran_pencairan_ubah_internal').modal('hide');
-        });
-    </script>
-    <script>
-        Livewire.on('resetKwitansi', () => {
-            let inputFile = document.querySelector('#customFileScanKwitansi input[type="file"]');
-            let inputLabel = document.querySelector('#customFileLabel');
+<script>
+    Livewire.on('dataTersimpanPerubahan', () => {
+        $('#modal_lampiran_pencairan_ubah_internal').modal('hide');
+    });
+</script>
+<script>
+    Livewire.on('resetKwitansi', () => {
+        let inputFile = document.querySelector('#customFileScanKwitansi input[type="file"]');
+        let inputLabel = document.querySelector('#customFileLabel');
+        
+        if (inputFile) {
+            inputFile.value = '';
+        }
 
-            if (inputFile) {
-                inputFile.value = '';
-            }
-
-            if (inputLabel) {
-                inputLabel.innerHTML = 'Pilih file';
-            }
-        });
-    </script>
+        if (inputLabel) {
+            inputLabel.innerHTML = 'Pilih file';
+        } 
+    });
+</script>
 @endpush
 
 @push('script')
@@ -1641,6 +1642,14 @@
 
                 $('#nominal_pencairan2').on('input', function(e) {
                     $('#nominal_pencairan2').val(formatRupiah($('#nominal_pencairan2').val(),
+                        'Rp. '));
+                });
+                $('#nominal_pencairan3').on('input', function(e) {
+                    $('#nominal_pencairan3').val(formatRupiah($('#nominal_pencairan3').val(),
+                        'Rp. '));
+                });
+                $('#nominal_pencairan4').on('input', function(e) {
+                    $('#nominal_pencairan4').val(formatRupiah($('#nominal_pencairan4').val(),
                         'Rp. '));
                 });
             }

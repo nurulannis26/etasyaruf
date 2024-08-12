@@ -66,8 +66,8 @@
                     {{-- date range --}}
                     <div class="col-12 col-md-3 col-sm-12 mb-2 mb-xl-0">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control text-center icon-input" id="reportrange2"
-                                wire:ignore name="filter_daterange2" readonly
+                            <input type="text" class="form-control text-center icon-input" id="reportrange2" wire:ignore
+                                name="filter_daterange2" readonly
                                 style="background-color: white;cursor: pointer;min-width:175px;height:37.5px;">
                         </div>
                     </div>
@@ -84,6 +84,7 @@
                                 <option value="Belum Direspon">Belum Direspon</option>
                                 <option value="Disetujui">Disetujui</option>
                                 <option value="Ditolak">Ditolak</option>
+                                <option value="Berhasil Dicairkan">Berhasil Dicairkan</option>
                             </select>
                         </div>
                     </div>
@@ -513,22 +514,27 @@
                                 @endif
                                 <br>
                             @endif
-
+                            
                             @if ($a->approval_status_divpro == 'Disetujui')
                                 @if ($a->status_ketua == 'Disetujui')
                                     <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
+                                    
                                 @elseif($a->respon_ketua != 'Tidak Perlu' and $a->status_ketua == 'Belum Direspon')
                                     <sup class="text-light badge badge-warning">Ketua Blm Merespon
                                     </sup>
+                                    
                                 @elseif ($a->status_ketua == 'Ditolak')
                                     <sup class="text-light badge badge-danger">Ditolak Ketua</sup>
+                                    
                                 @endif
                             @endif
 
                             @if ($a->approval_status_divpro == 'Disetujui')
                                 @if ($a->respon_ketua == 'Tidak Perlu')
                                     <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
+                                    
                                 @else
+                                    
                                 @endif
                             @endif
 
@@ -538,10 +544,7 @@
                                 </div>
                                 <div class="col text-bold text-right" style="font-size: 10pt;">
                                     @php
-                                        $jml_penerima = App\Models\PengajuanDetail::where(
-                                            'id_pengajuan',
-                                            $a->id_pengajuan,
-                                        )->sum('jumlah_penerima');
+                                        $jml_penerima = App\Models\PengajuanDetail::where('id_pengajuan', $a->id_pengajuan)->sum('jumlah_penerima');
                                     @endphp
                                     {{ $jml_penerima }}
                                 </div>
@@ -616,30 +619,17 @@
                             @if ($a->pil_survey == 'Perlu')
                                 <div class="text-right" style="font-size: 10pt;">
                                     @php
-                                        $disetujui = App\Models\SurveyPenerimaManfaat::where(
-                                            'id_pengajuan',
-                                            $a->id_pengajuan,
-                                        )
+                                        $disetujui = App\Models\SurveyPenerimaManfaat::where('id_pengajuan', $a->id_pengajuan)
                                             ->where('hasil', 'disetujui')
                                             ->count();
 
-                                        $ditolak = App\Models\SurveyPenerimaManfaat::where(
-                                            'id_pengajuan',
-                                            $a->id_pengajuan,
-                                        )
+                                        $ditolak = App\Models\SurveyPenerimaManfaat::where('id_pengajuan', $a->id_pengajuan)
                                             ->where('hasil', 'ditolak')
                                             ->count();
 
-                                        $belum_disurvey = App\Models\PengajuanPenerima::leftJoin(
-                                            'survey_penerima_manfaat',
-                                            function ($join) {
-                                                $join->on(
-                                                    'survey_penerima_manfaat.id_penerima_manfaat',
-                                                    '=',
-                                                    'pengajuan_penerima.id_pengajuan_penerima',
-                                                );
-                                            },
-                                        )
+                                        $belum_disurvey = App\Models\PengajuanPenerima::leftJoin('survey_penerima_manfaat', function ($join) {
+                                            $join->on('survey_penerima_manfaat.id_penerima_manfaat', '=', 'pengajuan_penerima.id_pengajuan_penerima');
+                                        })
                                             ->whereNull('survey_penerima_manfaat.id_penerima_manfaat')
                                             ->where('pengajuan_penerima.id_pengajuan', $a->id_pengajuan)
                                             ->count();
@@ -718,7 +708,6 @@
 
 
 
-
                         </td>
 
 
@@ -771,6 +760,7 @@
                                     {{ $a->keterangan_pencairan ?? '-' }}
                                 </em>
                             </div>
+                            
                             <div class="text-left" style="font-size: 10pt;margin-top: 5pt;">
                                 <span class="text-bold" style="font-size: 10pt;">
                                     {{ $a->sumber_dana_opsi }}
@@ -845,6 +835,7 @@
                                     @endif
                                 </div>
                             </div>
+                            
                             <div class="d-flex justify-content-between" style="font-size: 10pt;">
                                 <div>Tgl Diperiksa</div>
                                 <div class="text-bold">
@@ -858,47 +849,43 @@
                             </div>
 
                             @php
-                                $totalDigunakan = App\Models\lpjUmum::where(
-                                    'id_pengajuan_detail',
-                                    $a->id_pengajuan_detail,
-                                )->sum('nominal');
-                                if ($a->nominal_pencairan == null || $a->nominal_pencairan == '') {
-                                    $sisaNominal = $a->nominal_disetujui - $totalDigunakan;
-                                } else {
-                                    $sisaNominal = $a->nominal_pencairan - $totalDigunakan;
-                                }
-
-                                if ($sisaNominal < 0) {
-                                    $format_sisa_dana = '-Rp' . number_format(abs($sisaNominal), 0, '.', '.');
-                                    $warna = 'danger';
-                                } else {
-                                    $format_sisa_dana = 'Rp' . number_format($sisaNominal, 0, '.', '.');
-                                    $warna = 'black';
-                                }
+                                    $totalDigunakan = App\Models\lpjUmum::where('id_pengajuan_detail', $a->id_pengajuan_detail)->sum('nominal');
+                                    if ($a->nominal_pencairan == null || $a->nominal_pencairan == '') {
+                                        $sisaNominal = $a->nominal_disetujui - $totalDigunakan;
+                                    } else {
+                                        $sisaNominal = $a->nominal_pencairan - $totalDigunakan;
+                                    }
+                                    
+                                    if ($sisaNominal < 0) {
+                                        $format_sisa_dana = '-Rp' . number_format(abs($sisaNominal), 0, '.', '.') ;
+                                        $warna = 'danger';
+                                    } else {
+                                        $format_sisa_dana = 'Rp' . number_format($sisaNominal, 0, '.', '.');
+                                        $warna = 'black';
+                                    }
                             @endphp
-
+                            
                             <div class="row text-right mt-1">
-                                <div class="col text-bold  text-left" style="font-size: 10pt;">
-                                    Digunakan
+                                    <div class="col text-bold  text-left" style="font-size: 10pt;">
+                                        Digunakan
+                                    </div>
+                                    <div class="col text-bold text-right" style="font-size: 10pt;">
+                                        <b class="text-success" style="font-size: 10pt;">
+                                            Rp{{ number_format($totalDigunakan), 0, '.', '.' }}
+                                        </b>
+                                    </div>
                                 </div>
-                                <div class="col text-bold text-right" style="font-size: 10pt;">
-                                    <b class="text-success" style="font-size: 10pt;">
-                                        Rp{{ number_format($totalDigunakan), 0, '.', '.' }}
-                                    </b>
+                                <div class="row text-right">
+                                    <div class="col text-bold  text-left" style="font-size: 10pt;">
+                                        Tersisa
+                                    </div>
+                                    <div class="col text-bold text-right" style="font-size: 10pt;">
+                                        <b class="text-{{ $warna }}" style="font-size: 10pt;">
+                                            {{ $format_sisa_dana }}
+                                        </b>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row text-right">
-                                <div class="col text-bold  text-left" style="font-size: 10pt;">
-                                    Tersisa
-                                </div>
-                                <div class="col text-bold text-right" style="font-size: 10pt;">
-                                    <b class="text-{{ $warna }}" style="font-size: 10pt;">
-                                        {{ $format_sisa_dana }}
-                                    </b>
-                                </div>
-                            </div>
-
-
                         </td>
 
                     </tr>
@@ -1027,7 +1014,7 @@
                                 <th>Total Nominal Disetujui :</th>
                                 <td>Rp. {{ number_format($nominal_disetujui, 0, ',', '.') }}</td>
                             </tr>
-
+                            
 
                         </table>
                     </div>
@@ -1057,9 +1044,8 @@
                     pointStrokeColor: 'rgba(40,167,69)',
                     pointHighlightFill: '#fff',
                     pointHighlightStroke: 'rgba(40,167,69)',
-                    data: [{{ $detail_pilar_ekonomi }},
-                        {{ $detail_pilar_pendidikan }}, {{ $detail_pilar_kesehatan }},
-                        {{ $detail_pilar_dakwah_dan_kemanusiaan }},
+                    data: [ {{ $detail_pilar_ekonomi }},
+                        {{ $detail_pilar_pendidikan }}, {{ $detail_pilar_kesehatan }}, {{ $detail_pilar_dakwah_dan_kemanusiaan }},
                         {{ $detail_pilar_lingkungan }}, {{ $detail_pilar_amil }}
                     ]
                 }, ]
@@ -1195,18 +1181,18 @@
         </script>
 
         <script>
-            $(document).ready(function() {
-                $('#Umum-Pc').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
-                    },
-                    "paging": true, // Aktifkan pagination
-                    "searching": true, // Aktifkan search box
-                    "info": true, // Aktifkan informasi tampilan data
-                    "lengthMenu": [5, 10, 25, 50, 100], // Pilihan jumlah baris per halaman
-                    "pageLength": 5 // Jumlah baris awal yang ditampilkan
-                });
+        $(document).ready(function() {
+            $('#Umum-Pc').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
+                },
+                "paging": true,    // Aktifkan pagination
+                "searching": true, // Aktifkan search box
+                "info": true,      // Aktifkan informasi tampilan data
+                "lengthMenu": [5, 10, 25, 50, 100], // Pilihan jumlah baris per halaman
+                "pageLength": 5 // Jumlah baris awal yang ditampilkan
             });
-        </script>
+        });
+    </script>
     @endpush
 </div>

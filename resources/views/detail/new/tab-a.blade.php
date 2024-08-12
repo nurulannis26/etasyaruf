@@ -333,7 +333,7 @@
                              <span style="font-size:11pt;" class="text-bold text-primary">
                                  {{ $this->getJumlahPenerimaPenyaluran($b->id_pengajuan_detail) }}</span><br>
                                  <span style="font-size:11pt;" class="text-bold text-warning">
-                                 {{ $a->jumlah_penerima_disetujui ?? 0 }}</span>
+                                 {{ $b->jumlah_penerima_disetujui ?? 0 }}</span>
 
                          </div>
                      </td>

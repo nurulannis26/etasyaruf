@@ -1,4 +1,4 @@
-kam<?php
+<?php
 function penyebut($nilai)
 {
     $nilai = abs($nilai);
@@ -186,19 +186,19 @@ function terbilang($nilai)
             <tr>
                 <td colspan="2" style="width:364pt; padding-right:5.4pt; padding-left:5.4pt; vertical-align:top;">
                     <p class="BodyText"
-                        style="margin-top:0pt; margin-left:0pt; margin-bottom:3pt; margin-right:3pt; text-align:center; line-height:125%;">
+                        style="margin-top:0pt; margin-left:0pt; margin-bottom:1pt; margin-right:3pt; text-align:center; line-height:125%;">
                         <hr
-                            style="border: 0; height: 4px; background-color: #005023; box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;">
+                            style="border: 0; height: 2px; background-color: #005023; box-shadow: rgba(17, 12, 46, 0.15) 0px 30px 100px 0px;">
                     </p>
-                    <p style="text-align: center; margin-bottom: 0pt;margin-top: 5pt;"><strong>BERITA ACARA SERAH
+                    <p style="text-align: center; margin-bottom: 0pt;margin-top: 0pt;"><strong>BERITA ACARA SERAH
                             TERIMA (BAST) PENYALURAN MELALUI TRANSFER</strong></p>
-                    <p style="text-align: center; margin-bottom: 8pt;margin-top: 5pt;"><strong>Nomor :
+                    <p style="text-align: center; margin-bottom: 2pt;margin-top: 0pt;"><strong>Nomor :
                             {{ $data->nomor_surat }}</strong></p>
                 </td>
             </tr>
         </tbody>
     </table>
-    <p style="text-align: left; margin-bottom: 5pt;margin-top: 5pt;padding-left:5.4pt;padding-right:5.4pt;">Pada hari
+    <p style="text-align: left; margin-bottom: 0pt;margin-top: 2pt;padding-left:5.4pt;padding-right:5.4pt;">Pada hari
         ini {{ $namaHari }} tanggal {{ $hari }} bulan {{ $bulan }} tahun {{ $tahun }}, kami :
     </p>
     <p
@@ -376,6 +376,46 @@ function terbilang($nilai)
                     </p>
                 </td>
             </tr>
+            <tr>
+                <td
+                    style="width:85pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        <strong>Alamat</strong>
+                    </p>
+                </td>
+                <td
+                    style="width:3.4pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText"
+                        style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; text-align:center; line-height:125%;">
+                        :</p>
+                </td>
+                <td
+                    style="width:353pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        {{ $data->alamat2 ?? '-' }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="width:85pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        <strong>Keterangan</strong>
+                    </p>
+                </td>
+                <td
+                    style="width:3.4pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText"
+                        style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; text-align:center; line-height:125%;">
+                        :</p>
+                </td>
+                <td
+                    style="width:353pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        {{ $data->pengajuan_note ?? '-' }}
+                    </p>
+                </td>
+            </tr>
         </tbody>
     </table>
 
@@ -511,9 +551,9 @@ function terbilang($nilai)
 
     <table cellspacing="0" cellpadding="0" style="margin-left:295.7pt; border-collapse:collapse; position:relative;">
     <tbody>
-        <tr style="height:15.3pt;">
+        <tr style="height:12pt;">
             <td style="width:250pt; vertical-align:top;">
-                <p style="margin:0pt 8.9pt 8pt 9pt; text-align:center; font-size:7pt;">
+                <p style="margin:0pt 8.9pt 5pt 9pt; text-align:center; font-size:7pt;">
                     <strong><span style="font-size:11pt;">PIHAK PERTAMA</span></strong>
                 </p>
             </td>
@@ -526,7 +566,7 @@ function terbilang($nilai)
                     <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_pihak }}" alt="Tanda tangan" width="110" height="100">
                     @else
                     <p
-                                    style="margin-top:3pt; margin-bottom:0pt; text-align:center; line-height:125%; font-size:11pt;">
+                                    style="margin-top:0pt; margin-bottom:0pt; text-align:center; line-height:125%; font-size:11pt;">
                                     &nbsp;</p>
                                 <p
                                     style="margin-top:0pt; margin-bottom:0pt; text-align:center; line-height:125%; font-size:11pt;">

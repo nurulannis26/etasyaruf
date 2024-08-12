@@ -34,8 +34,7 @@
     @media (max-width: 576px) {
         .hover-text {
             left: 50%;
-            top: 60px;
-            /* Atur ulang jarak vertikal dari teks tombol */
+            top: 60px; /* Atur ulang jarak vertikal dari teks tombol */
             transform: translateX(-50%);
             font-size: 15px;
         }
@@ -140,7 +139,7 @@
         <p class="tab-tab-status-detail-pengajuan-umum-pc d-inline">
             {{-- START badge --}}
 
-            @if ($dp->status_pengajuan == 'Direncanakan')
+           @if ($dp->status_pengajuan == 'Direncanakan')
                 <sup class="text-light badge badge-warning">Pengajuan Blm Selesai Diinput FO</sup>
             @endif
 
@@ -167,8 +166,8 @@
                     </sup>
                 @endif
             @endif
-
-            @if ($data_detail->approval_status_divpro == 'Disetujui')
+            
+            @if ($data_detail->approval_status == 'Disetujui')
                 @if ($data_detail->status_ketua == 'Disetujui')
                     <sup class="text-light badge badge-success">Ketua Mengetahui</sup>
                 @elseif($data_detail->respon_ketua != 'Tidak Perlu' and $data_detail->status_ketua == 'Belum Direspon')
@@ -179,10 +178,11 @@
                 @endif
             @endif
 
-            @if ($data_detail->approval_status_divpro == 'Disetujui')
+            @if ($data_detail->approval_status == 'Disetujui')
                 @if ($data_detail->respon_ketua == 'Tidak Perlu')
                     <sup class="text-light badge badge-secondary">Tanpa Respon Ketua</sup>
                 @else
+                    
                 @endif
             @endif
 
@@ -243,24 +243,24 @@
             {{-- {{ dd($data_detail) }} --}}
 
 
-            @if ($data_detail->approval_status == 'Disetujui')
-                @if ($data_detail->berita_konfirmasi_pc)
-                    <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
-                    </sup>
-                @else
-                    <sup class="text-light badge badge-warning">LPJ Blm Dikonfirmasi Div. Penyaluran
-                    </sup>
-                @endif
-
-
-                @if ($data_detail->konfirmasi_lpj_div_prog != 'Dikonfirmasi')
-                    <sup class="text-light badge badge-warning">LPJ Blm Diperiksa Div. Program
-                    </sup>
-                @else
-                    <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
-                    </sup>
-                @endif
+                @if ($data_detail->pencairan_status == 'Berhasil Dicairkan')
+            @if ($data_detail->berita_konfirmasi_pc)
+                <sup class="text-light badge badge-success">LPJ Dikonfirmasi Div. Penyaluran
+                </sup>
+            @else
+                <sup class="text-light badge badge-warning">LPJ Blm Dikonfirmasi Div. Penyaluran
+                </sup>
             @endif
+
+
+            @if ($data_detail->konfirmasi_lpj_div_prog != 'Dikonfirmasi')
+                <sup class="text-light badge badge-warning">LPJ Blm Diperiksa Div. Program
+                </sup>
+            @else
+                <sup class="text-light badge badge-success">LPJ Diperiksa Div. Program
+                </sup>
+            @endif
+         @endif
 
 
             {{-- END badge --}}
@@ -443,13 +443,9 @@
 
 
 
-@if (
-    $this->metode_pencairan != null &&
-        $this->sumber_dana_opsi_keuangan == 'Dana Zakat' &&
-        $data_detail->id_asnaf == null)
+@if ($this->metode_pencairan != null && $this->sumber_dana_opsi_keuangan == 'Dana Zakat' && $data_detail->id_asnaf == null)
     <div class="alert alert-danger alert-dismissible fade show mt-2 mr-2 ml-2" role="alert">
-        <i class="fas fa-times-circle"></i> Asnaf masih kosong! Silahkan ACC ulang pencairan Kepala Cabang dan pilih
-        asnaf jika belum.
+        <i class="fas fa-times-circle"></i> Asnaf masih kosong! Silahkan ACC ulang pencairan Kepala Cabang dan pilih asnaf jika belum.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -654,18 +650,12 @@
                             <select wire:model="id_program_kegiatan_d" class="form-control"
                                 data-placeholder="Pilih Pilar Terlebih Dahulu" id="inptKegiatan">
                                 @php
-                                    $daftar_kegiatan_edit = App\Models\ProgramKegiatan::where(
-                                        'id_program_pilar',
-                                        $this->id_pilar_d,
-                                    )
+                                    $daftar_kegiatan_edit = App\Models\ProgramKegiatan::where('id_program_pilar', $this->id_pilar_d)
                                         ->whereRaw('LENGTH(no_urut) = 3')
                                         ->orderBy('no_urut', 'ASC')
                                         ->get();
 
-                                    $daftar_kegiatan2_edit = App\Models\ProgramKegiatan::where(
-                                        'id_program_pilar',
-                                        $this->id_pilar_d,
-                                    )
+                                    $daftar_kegiatan2_edit = App\Models\ProgramKegiatan::where('id_program_pilar', $this->id_pilar_d)
                                         ->whereRaw('LENGTH(no_urut) = 4')
                                         ->orderBy('no_urut', 'ASC')
                                         ->get();
@@ -849,8 +839,7 @@
                         <div class="card card-body " style="background-color:#e0e0e0;">
                             <b>INFORMASI!</b>
                             <span>
-                                Dengan klik tombol ACC, Kepala Cabang memberikan persetujuan untuk dilakukan pencairan
-                                dana
+                                Dengan klik tombol ACC, Kepala Cabang memberikan persetujuan untuk dilakukan pencairan dana
                                 oleh
                                 divisi keuangan
                             </span>
@@ -862,7 +851,7 @@
                     </div>
 
                     {{-- tombol acc --}}
-                    <div class="form-group col-md-3">
+                   <div class="form-group col-md-3">
                         @if ($sumber_dana_opsi == 'Dana Zakat')
                             @if (
                                 $staf_keuangan == '' or
@@ -870,16 +859,16 @@
                                     $keterangan_acc_pencairan_direktur == '' or
                                     $sumber_dana_opsi == '' or
                                     $id_asnaf_d == '')
-                                <button class="btn btn-success btn-block btn-sinkronisasi" disabled
-                                    wire:loading.attr="disabled"><i class="fas fa-check-circle"></i>
-                                    ACC<span class="hover-text">Jika Sumber Dana adalah Dana Zakat
+                                <button class="btn btn-success btn-block btn-sinkronisasi" disabled wire:loading.attr="disabled"><i
+                                        class="fas fa-check-circle"></i>
+                                    ACC<span class="hover-text">Jika Sumber Dana adalah Dana Zakat 
                                         <br>maka Asnaf wajib diisi.
                                     </span></button>
                             @else
                                 <button type="submit" name="submit" class="btn btn-success btn-block "
                                     wire:loading.attr="disabled"><i class="fas fa-check-circle"></i>
                                     ACC
-                                </button>
+                                    </button>
                             @endif
                         @else
                             @if (
@@ -959,8 +948,7 @@
                         <div class="card card-body " style="background-color:#e0e0e0;">
                             <b>INFORMASI!</b>
                             <span>
-                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan
-                                dana
+                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan dana
                                 oleh
                                 divisi keuangan
                             </span>
@@ -1007,27 +995,43 @@
             </div>
 
             {{-- alert --}}
-            {{-- @if ($id_rekening2 != null)
-             @if (str_replace('.', '', $total_pencairan) > str_replace('.', '', $saldo))
-                 <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
-                     <i class="fas fa-minus-circle"></i>
-                     Saldo Tidak Cukup!
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                         <span aria-hidden="true">&times;</span>
-                     </button>
-                 </div>
-             @endif
-         @endif --}}
-            {{-- @if (str_replace('.', '', $satuan_disetujui2) > str_replace('.', '', $data_detail->satuan_pengajuan))
-             <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
-                 <i class="fas fa-minus-circle"></i>
-                 Nominal pencairan melebihi nominal yang pengajuan
-                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-         @endif --}}
-            {{-- end alert --}}
+            @if ($id_rekening2 != null)
+                @if (str_replace('.', '', $nominal_pencairan3) > str_replace('.', '', $saldo))
+                    <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                        <i class="fas fa-minus-circle"></i>
+                        Saldo Rekening Transfer Tidak Cukup!
+                    </div>
+                @else
+                @endif
+            @endif
+
+            @if ($id_rekening3 != null)
+                @if (str_replace('.', '', $nominal_pencairan4) > str_replace('.', '', $saldo_rek))
+                    <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                        <i class="fas fa-minus-circle"></i>
+                        Saldo Rekening Tunai Tidak Cukup!
+                    </div>
+                @else
+                @endif
+
+
+            @endif
+
+            @if (str_replace('.', '', $this->nominal_disetujui2) >
+                    str_replace('.', '', $data_detail->nominal_disetujui_pencairan_direktur))
+                <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                    <i class="fas fa-minus-circle"></i>
+                    Total nominal pencairan melebihi nominal disetujui KC
+                </div>
+            @endif
+
+            @if (str_replace('.', '', $this->nominal_pencairan2) > str_replace('.', '', $this->nominal_disetujui2))
+                <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                    <i class="fas fa-minus-circle"></i>
+                    Total Transfer dan Tunai melebihi Nominal Total Pencairan
+                </div>
+            @endif
+
 
 
             {{-- form --}}
@@ -1106,77 +1110,6 @@
                     {{-- end satuan disetujui keuangan --}}
 
 
-                    <div class="form-group @if ($this->metode_pencairan == 'Transfer' or $this->metode_pencairan == 'Langsung') col-md-6 @else col-md-12 @endif">
-                        <div class="input-group" wire:ignore>
-
-                            <select wire:model="metode_pencairan" class="form-control">
-                                <option value="" selected>Pilih Metode Pencairan</option>
-                                <option value="Langsung">Cash</option>
-                                <option value="Transfer">Transfer</option>
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                    {{-- sumber dana keuangan --}}
-                    <div class="form-group @if ($this->metode_pencairan == 'Transfer' or $this->metode_pencairan == 'Langsung') col-md-6 @else d-none @endif">
-                        <div class="input-group">
-                            <select wire:model="id_rekening2" class="form-control" id="inptKabupaten">
-                                <option value="" selected>Pilih rekening</option>
-                                @foreach ($rekeningKeuanganList as $ab)
-                                    <option value="{{ $ab->id_rekening ?? '' }}">
-                                        {{ $ab->nama_rekening ?? '' }} -
-                                        {{ $ab->no_rekening ?? '' }} -
-                                        Rp{{ number_format($ab->saldo ?? 0, 0, '.', '.') }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    {{-- end sumber dana keuangan --}}
-
-                    @if ($this->metode_pencairan == 'Transfer')
-                        <div class="form-group col-md-6">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"
-                                        style="width: 200px; display: flex; justify-content: center; align-items: center;">Nomor
-                                        Rekening</span>
-                                </div>
-
-                                <input wire:model="no_rek_penerima" type="text" class="form-control"
-                                    placeholder="Masukan nomor rekening">
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"
-                                        style="width: 200px; display: flex; justify-content: center; align-items: center;">Nama
-                                        Bank</span>
-                                </div>
-
-                                <input wire:model="nama_bank_penerima" type="text" class="form-control"
-                                    placeholder="Masukan nama bank">
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"
-                                        style="width: 200px; display: flex; justify-content: center; align-items: center;">Atas
-                                        Nama</span>
-                                </div>
-
-                                <input wire:model="atas_nama_penerima" type="text" class="form-control"
-                                    placeholder="Masukan atas nama">
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- keterangan keuangan --}}
                     <div class="form-group col-md-12">
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -1191,68 +1124,143 @@
 
                         </div>
                     </div>
-                    {{-- end keterangan keuangan --}}
 
+                    <hr style="width: 100%; border: none; border-top: 1px solid #797b7d; margin: 10px 0;">
+                    <span class="font-weight-bold col-md-12 mb-3">Pencairan melalui Transfer</span> <br>
 
+                    {{-- sumber dana keuangan --}}
+                    <div class="form-group col-md-6">
+                        <div class="input-group">
+                            <select wire:model="id_rekening2" class="form-control" id="inptKabupaten">
+                                <option value="" selected>Pilih rekening</option>
+                                @foreach ($rekening as $ab)
+                                    <option value="{{ $ab->id_rekening ?? '' }}">
+                                        {{ $ab->nama_rekening ?? '' }} -
+                                        {{ $ab->no_rekening ?? '' }} -
+                                        Rp{{ number_format($ab->saldo ?? 0, 0, '.', '.') }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-                    {{-- kwitansi keuangan --}}
-                    {{-- <div class="form-group col-md-12">
-                 <div class="input-group">
-                     <div class="input-group-prepend">
-                         <span class="input-group-text bor-abu">Nota</span>
-                     </div>
-                     <div class="custom-file custom-file-kwitansi">
-                         <input type="file" wire:model="kwitansi" accept="image/png, image/jpg, image/jpeg"
-                             class="custom-file-input" id="file" name="file">
-                         <label class="custom-file-label" for="customFile">Pilih
-                             file kwitansi (PDF/PNG/JPG/JPEG)</label>
-                     </div>
-                 </div>
-             </div> keuangan --}}
-                    {{-- end kwitansi keuangan --}}
+                    {{-- end sumber dana keuangan --}}
+
+                    <div class="form-group col-md-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                    style="width: 200px; display: flex; justify-content: center; align-items: center;">Nominal
+                                    Transfer</span>
+                            </div>
+                            <input wire:model="nominal_pencairan3" type="input" class="form-control"
+                                id="nominal_pencairan3">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                    style="width: 200px; display: flex; justify-content: center; align-items: center;">Nomor
+                                    Rekening</span>
+                            </div>
+
+                            <input wire:model="no_rek_penerima" type="text" class="form-control"
+                                placeholder="Nomor rekening">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                    style="width: 200px; display: flex; justify-content: center; align-items: center;">Nama
+                                    Bank</span>
+                            </div>
+
+                            <input wire:model="nama_bank_penerima" type="text" class="form-control"
+                                placeholder="Nama bank">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                    style="width: 200px; display: flex; justify-content: center; align-items: center;">Atas
+                                    Nama</span>
+                            </div>
+
+                            <input wire:model="atas_nama_penerima" type="text" class="form-control"
+                                placeholder="Atas nama">
+                        </div>
+                    </div>
+
+                    <hr style="width: 100%; border: none; border-top: 1px solid #797b7d; margin: 10px 0;">
+                    <span class="font-weight-bold col-md-12 mb-3">Pencairan melalui Tunai</span>
+
+                    <div class="form-group col-md-6">
+
+                        <select wire:model="id_rekening3" class="form-control" id="select2RekeningInternal">
+                            <option value="">Pilih Rekening</option>
+                            @foreach ($rekening2 as $a)
+                                <option value="{{ $a->id_rekening }}">
+                                    {{ $a->nama_rekening }} -
+                                    {{ $a->no_rekening }}
+                                    - Rp{{ number_format($a->saldo, 0, '.', '.') }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                    style="width: 200px; display: flex; justify-content: center; align-items: center;">Nominal
+                                    Tunai</span>
+                            </div>
+                            <input wire:model="nominal_pencairan4" type="input" class="form-control"
+                                id="nominal_pencairan4">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"
+                                    style="width: 200px; display: flex; justify-content: center; align-items: center;">Total
+                                    (Tunai + Transfer)</span>
+                            </div>
+                            <input wire:model="nominal_pencairan2" wire:input="updateTotalNominal" type="text"
+                                class="form-control" id="nominal_pencairan2" readonly>
+                        </div>
+                    </div>
 
                     {{-- info keuangan --}}
                     <div class="form-group col-md-12">
                         <div class="card card-body " style="background-color:#e0e0e0;">
-                            <b>INFORMASI!</b>
+                            <span class="font-weight-bold">INFORMASI!!</span>
                             <span>
-                                Dengan klik tombol Cairkan, divisi keuangan memberikan konfirmasi pencairan dana &
-                                mutasi
-                                pada rekening terpilih
+                                Dengan klik tombol Cairkan, SPV Cabang Bidang Operasional dan Keuangan
+                                memberikan persetujuan pencairan dana melalui
+                                sumber dana & rekening yang dipilih.
                             </span>
                         </div>
                     </div>
                     {{-- end info keuangan --}}
 
-                    <div class="form-group col-md-9">
-                    </div>
                     {{-- tombol acc --}}
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-3 ml-auto">
                         @if ($this->sumber_dana_opsi_keuangan == 'Dana Zakat' && $data_detail->id_asnaf == null)
                             <button class="btn btn-success btn-block" disabled wire:loading.attr="disabled"><i
                                     class="fas fa-check-circle"></i>
                                 Cairkan</button>
-                        @endif
-                        @if ($this->metode_pencairan == 'Transfer')
-                            @if ($id_rekening2 && $this->metode_pencairan && $this->tgl_pencairan != null)
-                                <button type="submit" name="submit" class="btn btn-success btn-block tombol-cair"
-                                    wire:loading.attr="disabled"><i class="fas fa-check-circle"></i>
-                                    Cairkan</button>
-                            @else
-                                <button class="btn btn-success btn-block" disabled wire:loading.attr="disabled"><i
-                                        class="fas fa-check-circle"></i>
-                                    Cairkan</button>
-                            @endif
-                        @elseif ($this->metode_pencairan == 'Langsung' && $this->tgl_pencairan != null && $id_rekening2 != '')
+                        @else
                             <button type="submit" name="submit" class="btn btn-success btn-block tombol-cair"
                                 wire:loading.attr="disabled"><i class="fas fa-check-circle"></i>
                                 Cairkan</button>
-                        @else
-                            <button class="btn btn-success btn-block" disabled wire:loading.attr="disabled"><i
-                                    class="fas fa-check-circle"></i>
-                                Cairkan</button>
-
                         @endif
+
                     </div>
                     {{-- acc --}}
 
@@ -1317,8 +1325,7 @@
                         <div class="card card-body " style="background-color:#e0e0e0;">
                             <b>INFORMASI!</b>
                             <span>
-                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan
-                                dana
+                                Dengan klik tombol tolak, Kepala Cabang memberikan penolakan untuk dilakukan pencairan dana
                                 oleh
                                 divisi keuangan
                             </span>
@@ -1369,46 +1376,43 @@
                     @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '8c5a0ce3-540f-11ed-abf5-e4a8df91d8b3' and
                             $data_detail->approval_status == 'Disetujui')
                         @if ($data_detail->status_ketua != null and $data_detail->status_ketua != 'Ditolak')
-                            <!--<div class="ml-2" style="padding-left: 250px;">-->
-                            <div class="btn-group">
-                                <div class="btn-group float-right">
+                        <div class="btn-group">
+                            <div class="btn-group float-right">
 
-                                    <button type="button" class="btn" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false"
-                                        style="background-color: #cccccc">Respon</button>
-                                    <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                        style="background-color: #cccccc">
-                                        <span class="sr-only">Toggle
-                                            Dropdown</span>
-                                    </button>
+                                <button type="button" class="btn" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" style="background-color: #cccccc">Respon</button>
+                                <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    style="background-color: #cccccc">
+                                    <span class="sr-only">Toggle
+                                        Dropdown</span>
+                                </button>
 
-                                    <div class="dropdown-menu ">
-                                        <a wire:click="tombol_acc_direktur_keuangan"
-                                            onMouseOver="this.style.color='green'"
-                                            onMouseOut="this.style.color='black'" class="dropdown-item"
-                                            data-toggle="modal" data-target="#modal_acc" type="button"><i
-                                                class="fas fa-user-check"></i>
-                                            @if (
-                                                $data_detail->approval_status_pencairan_direktur == 'Disetujui' &&
-                                                    $data_detail->pencairan_status == 'Belum Dicairkan' or
-                                                    $data_detail->approval_status_pencairan_direktur == 'Ditolak')
-                                                ACC Ulang
-                                            @elseif ($data_detail->approval_status == 'Disetujui' && $data_detail->pencairan_status == 'Belum Dicairkan')
-                                                ACC
-                                            @endif
-                                        </a>
-                                        <a wire:click="tombol_tolak_direktur_keuangan"
-                                            onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'"
-                                            class="dropdown-item" data-toggle="modal" data-target="#modal_tolak"
-                                            type="button"><i class="fas fa-ban"></i>
-                                            Tolak</a>
-                                    </div>
+                                <div class="dropdown-menu ">
+                                    <a wire:click="tombol_acc_direktur_keuangan"
+                                        onMouseOver="this.style.color='green'" onMouseOut="this.style.color='black'"
+                                        class="dropdown-item" data-toggle="modal" data-target="#modal_acc"
+                                        type="button"><i class="fas fa-user-check"></i>
+                                        @if (
+                                            $data_detail->approval_status_pencairan_direktur == 'Disetujui' &&
+                                                $data_detail->pencairan_status == 'Belum Dicairkan' or
+                                                $data_detail->approval_status_pencairan_direktur == 'Ditolak')
+                                            ACC Ulang
+                                        @elseif ($data_detail->approval_status == 'Disetujui' && $data_detail->pencairan_status == 'Belum Dicairkan')
+                                            ACC
+                                        @endif
+                                    </a>
+                                    <a wire:click="tombol_tolak_direktur_keuangan"
+                                        onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'"
+                                        class="dropdown-item" data-toggle="modal" data-target="#modal_tolak"
+                                        type="button"><i class="fas fa-ban"></i>
+                                        Tolak</a>
                                 </div>
-
                             </div>
-                        @endif
 
+                        </div>
+
+                    @endif
                     @endif
                 @endif
             @endif
@@ -1667,39 +1671,40 @@
                 @endif
             </p> --}}
             </div>
-            @if (Auth::user()->gocap_id_pc_pengurus == $data_detail->staf_keuangan_pc)
-                <div class="mr-2">
-                    <div class="btn-group float-right">
-                        <button type="button" class="btn" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false" style="background-color: #cccccc">Respon</button>
-                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                            style="background-color: #cccccc">
-                            <span class="sr-only">Toggle
-                                Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu ">
-                            <a wire:click="tombol_acc" onMouseOver="this.style.color='green'"
-                                onMouseOut="this.style.color='black'" class="dropdown-item" type="button"
-                                data-container="body" data-toggle="popover" data-placement="left"
-                                data-content="Left popover"><i class="fas fa-user-check"></i>
-                                @if ($data_detail->pencairan_status == 'Belum Dicairkan')
-                                    Cairkan Dana
-                                @else
-                                    Cairkan Ulang
-                                @endif
-                            </a>
+                @if (Auth::user()->gocap_id_pc_pengurus == $data_detail->staf_keuangan_pc)
+                            <div class="mr-2">
+                                <div class="btn-group float-right">
+                                    <button type="button" class="btn" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"
+                                        style="background-color: #cccccc">Respon</button>
+                                    <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                        style="background-color: #cccccc">
+                                        <span class="sr-only">Toggle
+                                            Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu ">
+                                        <a wire:click="tombol_acc" onMouseOver="this.style.color='green'"
+                                            onMouseOut="this.style.color='black'" class="dropdown-item"
+                                            type="button" data-container="body" data-toggle="popover" data-placement="left" data-content="Left popover"><i class="fas fa-user-check"></i>
+                                            @if ($data_detail->pencairan_status == 'Belum Dicairkan')
+                                                Cairkan Dana
+                                            @else
+                                                Cairkan Ulang
+                                            @endif
+                                            </a>
 
-                            <a wire:click="tombol_tolak_keuangan" onMouseOver="this.style.color='red'"
-                                onMouseOut="this.style.color='black'" class="dropdown-item" data-toggle="modal"
-                                data-target="#modal_tolak_keuangan" type="button"><i class="fas fa-ban"></i>
-                                Tolak</a>
-                        </div>
+                                        <a wire:click="tombol_tolak_keuangan" onMouseOver="this.style.color='red'"
+                                            onMouseOut="this.style.color='black'" class="dropdown-item"
+                                            data-toggle="modal" data-target="#modal_tolak_keuangan" type="button"><i
+                                                class="fas fa-ban"></i>
+                                            Tolak</a>
+                                    </div>
 
-                    </div>
+                                </div>
 
-                </div>
-            @endif
+                            </div>
+                @endif
 
         </div>
         {{-- end judul --}}
@@ -1773,10 +1778,11 @@
                             @elseif($data_detail->pencairan_status == 'Ditolak')
                                 -
                             @else
-                                {{ $this->nama_rekening($data_detail->id_rekening) ?? '-' }}<br>
-                                @if ($data_detail->metode_pencairan == 'Transfer')
+                                @if (($data_detail->bentuk_transfer == 'Transfer' and $data_detail->bentuk_tunai == '') or $data_detail->metode_pencairan == 'Transfer')
+
                                     <span class="text-light badge badge-primary">Transfer
                                     </span><br>
+                                    {{ $this->nama_rekening($data_detail->id_rekening) ?? '-' }}<br>
                                     <span>
                                         Atas Nama &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
                                         {{ $data_detail->atas_nama_penerima ?? '-' }}
@@ -1785,11 +1791,60 @@
                                         {{ $data_detail->nama_bank_penerima ?? '-' }}
                                         <br>
                                         No Rek Tujuan : {{ $data_detail->no_rek_penerima ?? '-' }} <br>
-
+                                        @if ($data_detail->bentuk_transfer == 'Transfer')
+                                        Nominal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        :
+                                        @if ($data_detail->nominal_pencairan2 == null)
+                                            Rp0,-
+                                        @else
+                                            Rp{{ number_format($data_detail->nominal_pencairan2, 0, '.', '.') }},-
+                                        @endif
+                                        @endif
                                     </span>
-                                @elseif ($data_detail->metode_pencairan == 'Langsung')
+                                @elseif (($data_detail->bentuk_tunai == 'Langsung' and $data_detail->bentuk_transfer == '') or $data_detail->metode_pencairan == 'Langsung')
                                     <span class="text-light badge badge-success">Langsung
-                                    </span>
+                                    </span><br>
+                                    @if ($data_detail->bentuk_tunai == 'Langsung')
+                                    {{ $this->nama_rekening($data_detail->id_rekening2) ?? '-' }}<br>
+                                    Nominal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+                                    @if ($data_detail->nominal_pencairan3 == null)
+                                        Rp0,-
+                                    @else
+                                        Rp{{ number_format($data_detail->nominal_pencairan3, 0, '.', '.') }},-
+                                    @endif
+                                    @else
+                                    {{ $this->nama_rekening($data_detail->id_rekening) ?? '-' }}<br>
+                                    @endif
+                                    
+                                @elseif ($data_detail->bentuk_transfer == 'Transfer' and $data_detail->bentuk_tunai == 'Langsung')
+                                    <span class="text-light badge badge-primary">Transfer
+                                    </span><br>
+                                    {{ $this->nama_rekening($data_detail->id_rekening) ?? '-' }}<br>
+                                    <span>
+                                        Atas Nama &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+                                        {{ $data_detail->atas_nama_penerima ?? '-' }}
+                                        <br>
+                                        Bank Tujuan &nbsp;&nbsp;&nbsp;&nbsp;:
+                                        {{ $data_detail->nama_bank_penerima ?? '-' }}
+                                        <br>
+                                        No Rek Tujuan : {{ $data_detail->no_rek_penerima ?? '-' }} <br>
+                                        Nominal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        :
+                                        @if ($data_detail->nominal_pencairan2 == null)
+                                            Rp0,-
+                                        @else
+                                            Rp{{ number_format($data_detail->nominal_pencairan2, 0, '.', '.') }},-
+                                        @endif
+                                    </span> <br>
+                                    <span class="text-light badge badge-success">Langsung
+                                    </span><br>
+                                    {{ $this->nama_rekening($data_detail->id_rekening2) ?? '-' }}<br>
+                                    Nominal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+                                    @if ($data_detail->nominal_pencairan3 == null)
+                                        Rp0,-
+                                    @else
+                                        Rp{{ number_format($data_detail->nominal_pencairan3, 0, '.', '.') }},-
+                                    @endif
                                 @else
                                     -
                                 @endif
@@ -1826,23 +1881,21 @@
                             @endif
                         </td>
                     </tr>
-
+                    
                     <tr>
                         <td class="text-bold" style="width: 30%;vertical-align: middle;">
                             Kwitansi Pencairan
                         </td>
                         <td>
                             <span>Format Kwitansi Pencairan </span><br>
-                            <a href="/pc/kwitansi_pencairan_umum/{{ $data_detail->id_pengajuan_detail }}"
-                                target="_blank" class="btn btn-sm btn-outline-success hover float-left mr-2 mt-2"
+                            <a href="/pc/kwitansi_pencairan_umum/{{ $data_detail->id_pengajuan_detail }}" target="_blank"
+                                class="btn btn-sm btn-outline-success hover float-left mr-2 mt-2"
                                 role="button" style="border-radius:10px; width:3cm;">Download
                             </a>
-                            @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '20f2ff4d-1596-48ab-b60d-8a4b75a9784d' and
-                                    $data_detail->pencairan_status == 'Berhasil Dicairkan')
+                            @if (Auth::user()->PcPengurus->JabatanPengurus->id_pengurus_jabatan == '20f2ff4d-1596-48ab-b60d-8a4b75a9784d' and $data_detail->pencairan_status == 'Berhasil Dicairkan')
                                 <button wire:click="sendNotifKwitansiUmum()"
-                                    class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2" role="button"
-                                    style="border-radius:10px; width:3cm;"
-                                    @if ($data_detail->terima_kwitansi == '1') disabled @endif>Terima
+                                    class="btn btn-sm btn-outline-primary hover float-left mr-2 mt-2"
+                                    role="button" style="border-radius:10px; width:3cm;" @if ($data_detail->terima_kwitansi == '1') disabled @endif>Terima
                                     Kwitansi
                                 </button>
                             @endif
@@ -1850,7 +1903,7 @@
                         </td>
                     </tr>
 
-
+                    
 
 
                     {{-- <tr>
@@ -2001,36 +2054,36 @@
     {{-- end penerima manfaat --}}
 
     {{-- @if ($cek_jurnal_tersedia > 0) --}}
-    <div class="col-sm-12 col-lg-12 col-md-12 mt-2 tab-tab-daftar-penerima-manfaat-pengajuan-umum-pc">
-        <div class="card card-outline mb-0 pb-0" style="border-radius: 10px;">
-            <div class="card-body">
-                <div class="row mb-0 pb-0 pl-0">
-                    <div class="col-10 pr-0 d-highlight pr-0 mr-0 mb-1">
-                        <strong>
-                            <b class="text-success">Detail Jurnal Umum {{ $detail_jurnal->nomor ?? '' }} </b>
-                        </strong>
-                    </div>
+        <div class="col-sm-12 col-lg-12 col-md-12 mt-2 tab-tab-daftar-penerima-manfaat-pengajuan-umum-pc">
+            <div class="card card-outline mb-0 pb-0" style="border-radius: 10px;">
+                <div class="card-body">
+                    <div class="row mb-0 pb-0 pl-0">
+                       <div class="col-10 pr-0 d-highlight pr-0 mr-0 mb-1">
+                            <strong>
+                                <b class="text-success">Detail Jurnal Umum {{ $detail_jurnal->nomor ?? '' }} </b>
+                            </strong>
+                        </div>
 
-                    @if ($detail_jurnal && isset($detail_jurnal->id_jurnal_umum))
+                        @if($detail_jurnal && isset($detail_jurnal->id_jurnal_umum))
                         <div class="col-2 pr-0 d-highlight pr-0 mr-0 mb-1 btn-block">
                             <a class="text-center btn btn-primary" target="_blank"
                                 href="{{ route('print_jurnal_umum', $detail_jurnal->id_jurnal_umum) }}"><i
                                     class="fa fa-print nav-icon"></i> CETAK JURNAL</a>
                         </div>
-                    @else
+                        @else
                         <div class="col-2 pr-0 d-highlight pr-0 mr-0 mb-1 btn-block">
                             <span class="text-center btn btn-primary disabled">CETAK JURNAL</span>
                         </div>
-                    @endif
+                        @endif
 
+                        
 
+                    </div>
 
                 </div>
-
+                @include('jurnal_umum.form_detail_jurnal_umum')
             </div>
-            @include('jurnal_umum.form_detail_jurnal_umum')
         </div>
-    </div>
 
 </div>
 
@@ -2041,20 +2094,20 @@
 
 
 @push('script')
-    <script>
-        Livewire.on('resetKuitansi', () => {
-            let inputFile = document.querySelector('#customFileScanKwitansi input[type="file"]');
-            let inputLabel = document.querySelector('#customFileLabel');
+<script>
+    Livewire.on('resetKuitansi', () => {
+        let inputFile = document.querySelector('#customFileScanKwitansi input[type="file"]');
+        let inputLabel = document.querySelector('#customFileLabel');
+        
+        if (inputFile) {
+            inputFile.value = '';
+        } 
 
-            if (inputFile) {
-                inputFile.value = '';
-            }
-
-            if (inputLabel) {
-                inputLabel.innerHTML = 'Pilih file';
-            }
-        });
-    </script>
+        if (inputLabel) {
+            inputLabel.innerHTML = 'Pilih file';
+        } 
+    });
+</script>
 
     <script>
         $(document).ready(function() {

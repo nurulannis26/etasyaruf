@@ -86,7 +86,7 @@
                    <div class="modal-footer">
                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-ban"></i>
                            Batal</button>
-                       @if ($tgl_penggunaan_dana_edit == '' or $dibayarkan_kepada_edit == ''or $nominal_edit == ''or $keterangan_edit == '')
+                       @if ($tgl_penggunaan_dana_edit == '')
                            <button class="btn btn-success" disabled wire:loading.attr="disabled"><i
                                    class="fas fa-save"></i>
                                Simpan</button>

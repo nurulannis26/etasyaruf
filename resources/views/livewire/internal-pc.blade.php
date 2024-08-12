@@ -75,6 +75,7 @@
                                 <option value="Belum Direspon">Belum Direspon</option>
                                 <option value="Disetujui">Disetujui</option>
                                 <option value="Ditolak">Ditolak</option>
+                                <option value="Berhasil Dicairkan">Berhasil Dicairkan</option>
                             </select>
                         </div>
                     </div>

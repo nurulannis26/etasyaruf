@@ -51,11 +51,21 @@
             overflow-x: hidden;
         }
          .select2-selection {
-            height: 38px !important;
+            min-height: 38px !important;
         }
 
          .select2-selection__arrow {
-            height: 38px !important;
+            min-height: 38px !important;
+        }
+        
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #28a745 !important;
+            color: #ffffff !important; /* Use white color for better contrast with green background */
+            border: #28a745 !important;
+        }
+        
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #ffffff !important;
         }
     </style>
     <title>E-TASYARUF</title>

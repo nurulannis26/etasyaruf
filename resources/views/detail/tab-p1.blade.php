@@ -148,7 +148,8 @@
           {{-- end survey --}}
           <hr>
           <hr style="width: 100%; border: none; border-top: 1px solid #797b7d; margin: 10px 0;">
-
+        
+        {{-- 
           <div class="form-group col-md-6">
               <label for="inputNama">JENIS TANDA TERIMA &nbsp;</label>
               <select wire:model="jenis_tanda_terima" class="form-control">
@@ -166,9 +167,8 @@
               <input @if ($this->jenis_tanda_terima == 'lainnya') @else disabled @endif wire:model="lainnya" type="text"
                   class="form-control" placeholder="Masukkan Tanda Terima Lainnya">
           </div>
-
-
-          <hr>
+          --}}
+          
           <div class="form-group col-md-6">
               <label>NOMOR SURAT &nbsp;</label>
               {{-- <sup class="badge badge-danger text-white mb-2" style="background-color:rgb(0, 187, 31)">Optional</sup> --}}
@@ -205,14 +205,35 @@
           {{-- end tgl pelaksanaan --}}
 
           <hr>
+          
+          <div class="form-group col-md-12">
+              <label for="inputNama">DOKUMEN PENGAJUAN &nbsp;</label>
+              <select class="select2" multiple="multiple" wire:model="syarat_dokumen"
+                  data-placeholder="Pilih dokumen pengajuan" id="dokumen_pengajuan" style="width: 100%;">
+                  <option value="Fotokopi KTP/SIM/Paspor/KK/KITAS">Fotokopi KTP/SIM/Paspor/KK/KITAS</option>
+                  <option value="Surat Keterangan Tidak Mampu">Surat Keterangan Tidak Mampu</option>
+                  <option value="Surat Keterangan Dokter">Surat Keterangan Dokter</option>
+                  <option value="Surat Keterangan dari Lembaga Pendidikan">Surat Keterangan dari Lembaga Pendidikan
+                  </option>
+                  <option value="Surat Keterangan Muallaf">Surat Keterangan Muallaf</option>
+                  <option value="Rekomendasi Pengurus NU/Lembaga NU/Banom NU">Rekomendasi Pengurus NU/Lembaga NU/Banom
+                      NU</option>
+                  <option value="NPWP Lembaga">NPWP Lembaga</option>
+                  <option value="Akta Notaris Lembaga">Akta Notaris Lembaga</option>
+                  <option value="Proposal Kegiatan">Proposal Kegiatan</option>
+                  <option value="Surat Permohonan">Surat Permohonan</option>
+                  <option value="Lainnya">Lainnya</option>
+              </select>
+          </div>
+          <hr>
 
-          {{--  tgl setor lpj  --}}
-          {{-- <div class="form-group col-md-4">
-              <label for="inputNama">TGL SETOR LPJ&nbsp;</label>
-              <sup class="badge badge-danger text-white mb-2" style="background-color:rgba(230,82,82)">WAJIB</sup>
-              <input wire:model="tgl_setor" type="date" class="form-control">
-          </div> --}}
-          {{-- end tgl setor lpj --}}
+          @if (in_array('Lainnya', $this->syarat_dokumen))
+              <div class="form-group col-md-12">
+                  <input wire:model="dokumen_lainnya" type="text" class="form-control"
+                      placeholder="Masukan dokumen lainnya">
+              </div>
+          @endif
+          <hr>
 
           <hr style="width: 100%; border: none; border-top: 1px solid #797b7d; margin: 10px 0;">
           <hr>
@@ -276,11 +297,9 @@
                   @endif
               </select>
           </div>
-          {{-- end kegiatan --}}
-          {{-- {{ $this->selectedProgram }}
-          {{ $this->jumlah_penerima . $this->satuan_pengajuan}} --}}
-          {{-- nama penerima manfaat --}}
+          
           <hr>
+          
           <div class="form-group col-md-12">
               <label for="inputNama">TARGET PENERIMA MANFAAT &nbsp;</label>
               {{-- <sup class="badge badge-danger text-white mb-2" style="background-color:rgba(230,82,82)">WAJIB</sup> --}}
@@ -421,13 +440,17 @@
 
 
 
-  @push('script')
+   @push('script')
       <script>
           $(document).ready(function() {
               bsCustomFileInput.init();
               window.loadContactDeviceSelect2 = () => {
                   window.initSelectStationDrop = () => {
                       $('#select2-dropdown').select2();
+                      $('#dokumen_pengajuan').select2();
+                      $('#dokumen_pengajuan').on('change', function(e) {
+                          @this.set('syarat_dokumen', $(this).val());
+                      });
                       $('#select2-dropdown').on('change', function() {
                           var selectedValue = $(this).val();
                           @this.set('selectedProgram', selectedValue);
@@ -446,6 +469,8 @@
           });
       </script>
   @endpush
+  
+  
 
   {{-- end modal body --}}
   @push('script')

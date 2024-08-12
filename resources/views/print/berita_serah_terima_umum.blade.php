@@ -1,4 +1,4 @@
-kam<?php
+<?php
 function penyebut($nilai)
 {
     $nilai = abs($nilai);
@@ -188,20 +188,20 @@ function terbilang($nilai)
                     <p class="BodyText"
                         style="margin-top:0pt; margin-left:0pt; margin-bottom:3pt; margin-right:3pt; text-align:center; line-height:125%;">
                         <hr
-                            style="border: 0; height: 4px; background-color: #005023; box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;">
+                            style="border: 0; height: 2px; background-color: #005023; box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;">
                     </p>
-                    <p style="text-align: center; margin-bottom: 5pt;margin-top: 10pt;"><strong>BERITA ACARA SERAH
+                    <p style="text-align: center; margin-bottom: 5pt;margin-top: 0pt;"><strong>BERITA ACARA SERAH
                             TERIMA (BAST)</strong></p>
-                    <p style="text-align: center; margin-bottom: 8pt;margin-top: 10pt;"><strong>Nomor :
+                    <p style="text-align: center; margin-bottom: 5pt;margin-top: 0pt;"><strong>Nomor :
                             {{ $data->nomor_surat }}</strong></p>
                 </td>
             </tr>
         </tbody>
     </table>
-    <p style="text-align: left; margin-bottom: 5pt;margin-top: 10pt;padding-left:5.4pt;padding-right:5.4pt;">Pada hari
+    <p style="text-align: left; margin-bottom: 2pt;margin-top: 0pt;padding-left:5.4pt;padding-right:5.4pt;">Pada hari
         ini {{$namaHari}} tanggal {{$hari}} bulan {{$bulan}} tahun {{$tahun}}, kami :</p>
     <p
-        style="text-align: justify; margin-bottom: 12pt;margin-top: 10pt;line-height: 1.6;padding-right:25pt;padding-left:5.4pt;">
+        style="text-align: justify; margin-bottom: 3pt;margin-top: 3pt;line-height: 1.6;padding-right:25pt;padding-left:5.4pt;">
         Bertindak sebagai PIHAK PERTAMA, atas nama NU Care LAZISNU yang dibentuk atas dasar AKTA NOTARIS Nomor 08 -
         tanggal 25 Mei 2022 dan izin KEMENAG RI Nomor 89 Tahun 2022 yang berkedudukan di Jakarta.</p>
 
@@ -268,7 +268,7 @@ function terbilang($nilai)
         </tbody>
     </table>
 
-    <p style="text-align: left; margin-bottom: 5pt;margin-top: 15pt;padding-left:5.4pt;padding-right:5.4pt;">Bersama
+    <p style="text-align: left; margin-bottom: 5pt;margin-top: 5pt;padding-left:5.4pt;padding-right:5.4pt;">Bersama
         ini menyerahkan Kepada :</p>
 
     <table style="width:460pt; border-collapse:collapse;padding-left:5.4pt;padding-right:5.4pt;">
@@ -375,10 +375,50 @@ function terbilang($nilai)
                     </p>
                 </td>
             </tr>
+            <tr>
+                <td
+                    style="width:85pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        <strong>Alamat</strong>
+                    </p>
+                </td>
+                <td
+                    style="width:3.4pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText"
+                        style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; text-align:center; line-height:125%;">
+                        :</p>
+                </td>
+                <td
+                    style="width:353pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        {{ $data->alamat2 ?? '-' }}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td
+                    style="width:85pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        <strong>Keterangan</strong>
+                    </p>
+                </td>
+                <td
+                    style="width:3.4pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText"
+                        style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; text-align:center; line-height:125%;">
+                        :</p>
+                </td>
+                <td
+                    style="width:353pt; border:0.75pt solid #000000; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;">
+                    <p class="BodyText" style="margin-top:3pt; margin-left:0pt; margin-bottom:3pt; line-height:125%;">
+                        {{ $data->pengajuan_note ?? '-' }}
+                    </p>
+                </td>
+            </tr>
         </tbody>
     </table>
 
-    <p style="text-align: left; margin-bottom: 5pt;margin-top: 15pt;padding-left:5.4pt;padding-right:5.4pt;">Sebagai
+    <p style="text-align: left; margin-bottom: 5pt;margin-top: 5pt;padding-left:5.4pt;padding-right:5.4pt;">Sebagai
         PIHAK KEDUA, Berupa {{ $data->berupa }} {{$datas}}.</p>
 
     <table style="width:485pt; border-collapse:collapse; padding-left:5.4pt; padding-right:5.4pt;">
@@ -489,7 +529,7 @@ function terbilang($nilai)
                                 @if ($data->nama1)
                                 <p
                                     style="margin-top:3pt; margin-bottom:0pt; text-align:center; line-height:125%; font-size:11pt;">
-                                    <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_pihak }}" alt="Tanda tangan" width="100" height="70"></p>
+                                    <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_pihak }}" alt="Tanda tangan" width="100" height="70"></p>
                                 @else
                                  <p
                                     style="margin-top:3pt; margin-bottom:0pt; text-align:center; line-height:125%; font-size:11pt;">
@@ -520,9 +560,6 @@ function terbilang($nilai)
                         </tr>
                     </tbody>
                 </table>
-                <p style="margin-top:3pt; margin-bottom:3pt; text-align:center; line-height:125%; font-size:11pt;">
-                    <br>
-                </p>
             </td>
         </tr>
     </table>
@@ -534,8 +571,6 @@ function terbilang($nilai)
                     3.) kwitansi 4.) surat permohonan / memo internal</span></em>
         </li>
     </ul>
-
-    <p style="font-size:10.5pt;"><em><span style="color:#3b3838;">&nbsp;</span></em></p>
 
     <div style="page-break-before: always;"></div>
     <div style="clear: both; ">
@@ -679,7 +714,13 @@ function terbilang($nilai)
                     <br>
 
                         <div class="tanda-tangan">
-                            <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/ttd/{{ $ttd_pihak }}" alt="Tanda tangan" width="70" height="58">
+                            @if ($ttd_pihak)
+                            <img style="margin-left: 5px" src="https://gocapv2.nucarecilacap.id/uploads/user/{{ $ttd_pihak }}" alt="Tanda tangan" width="70" height="58">
+                            @else
+                            <br>
+                            <br>
+                            <br>
+                            @endif
                         </div>
 
                         ({{ $data->nama1 ?? '..............' }})
